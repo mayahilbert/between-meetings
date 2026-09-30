@@ -10526,214 +10526,111 @@ emailInvite?.querySelector('.popup-close')?.addEventListener('click', () => {
 const browserWindow = document.querySelector('.browser-window');
 if (browserWindow) makeDraggable(browserWindow, false);
 
-const carousel = document.querySelector('.filmstrip-carousel');
-const filmstrip = carousel.querySelector('.filmstrip');
-filmstrip.id = 'filmstrip-track';
-const originalSlides = [...filmstrip.children];
-originalSlides.forEach((slide, index) => slide.dataset.slideIndex = String(index));
-const firstClone = originalSlides[0].cloneNode(true);
-const lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
-firstClone.setAttribute('aria-hidden', 'true');
-lastClone.setAttribute('aria-hidden', 'true');
-firstClone.setAttribute('tabindex', '-1');
-lastClone.setAttribute('tabindex', '-1');
-filmstrip.appendChild(firstClone);
-filmstrip.insertBefore(lastClone, originalSlides[0]);
-originalSlides.forEach((slide, index) => {
-  slide.setAttribute('role', 'button');
-  slide.setAttribute('tabindex', '0');
-  slide.setAttribute('aria-label', `Open filmstrip image ${index + 1}`);
-});
-
-let carouselIndex = 1;
-let carouselStep = 0;
-let carouselOffset = 0;
-let dragStartX = 0;
-let dragDeltaX = 0;
-let carouselPointerActive = false;
-let carouselDragging = false;
-let carouselAutoPlaying = true;
-let carouselAutoFrame = null;
-let carouselAutoLastTime = 0;
-let carouselAutoX = null;
-const carouselMotionToggle = carousel.querySelector('.carousel-motion-toggle');
 const filmstripModal = document.querySelector('#filmstrip-modal');
 const filmstripModalContent = filmstripModal?.querySelector('.filmstrip-modal__content');
 const filmstripModalClose = filmstripModal?.querySelector('.filmstrip-modal__close');
 let filmstripModalPreviousFocus = null;
-let suppressCarouselClick = false;
-const filmstripModalImages = new Map();
-
-originalSlides.forEach((slide, index) => {
-  if (!filmstripModalContent) return;
-  const image = slide.cloneNode(true);
-  image.classList.add('filmstrip-modal__image');
-  image.setAttribute('role', 'img');
-  image.setAttribute('aria-label', `Enlarged filmstrip image ${index + 1}`);
-  image.hidden = true;
-  filmstripModalContent.appendChild(image);
-  filmstripModalImages.set(slide, image);
-});
-
-function measureCarousel() {
-  const slide = filmstrip.children[0];
-  const styles = getComputedStyle(filmstrip);
-  carouselStep = slide.getBoundingClientRect().width + parseFloat(styles.gap || 0);
-  carouselOffset = parseFloat(getComputedStyle(carousel).getPropertyValue('--carousel-offset')) || 0;
-}
-
-function positionCarousel(animate = true, dragOffset = 0) {
-  filmstrip.style.transition = animate ? 'transform 420ms cubic-bezier(.22,.72,.24,1)' : 'none';
-  carouselAutoX = carouselOffset - carouselIndex * carouselStep + dragOffset;
-  filmstrip.style.transform = `translate3d(${carouselAutoX}px, 0, 0)`;
-}
-
-function moveCarousel(direction) {
-  carouselIndex += direction;
-  positionCarousel(true);
-}
-
-function startCarouselAutoScroll() {
-  if (carouselAutoFrame) cancelAnimationFrame(carouselAutoFrame);
-  carouselAutoLastTime = performance.now();
-  const tick = now => {
-    if (!carouselAutoPlaying) return;
-    const elapsed = Math.min(50, now - carouselAutoLastTime);
-    carouselAutoLastTime = now;
-    if (!carouselDragging) {
-      const speed = 32;
-      carouselAutoX = (carouselAutoX ?? (carouselOffset - carouselIndex * carouselStep)) - speed * elapsed / 1000;
-      const loopEnd = carouselOffset - (originalSlides.length + 1) * carouselStep;
-      if (carouselAutoX <= loopEnd) carouselAutoX += originalSlides.length * carouselStep;
-      filmstrip.style.transition = 'none';
-      filmstrip.style.transform = `translate3d(${carouselAutoX}px, 0, 0)`;
-    }
-    carouselAutoFrame = requestAnimationFrame(tick);
-  };
-  carouselAutoFrame = requestAnimationFrame(tick);
-}
-
-function stopCarouselAutoScroll() {
-  if (carouselAutoFrame) cancelAnimationFrame(carouselAutoFrame);
-  carouselAutoFrame = null;
-}
-
-measureCarousel();
-positionCarousel(false);
-
-carousel.querySelector('.carousel-arrow--prev').addEventListener('click', () => moveCarousel(-1));
-carousel.querySelector('.carousel-arrow--next').addEventListener('click', () => moveCarousel(1));
-
-if (carouselMotionToggle) {
-  carouselMotionToggle.addEventListener('click', () => {
-    carouselAutoPlaying = !carouselAutoPlaying;
-    carouselMotionToggle.classList.toggle('is-paused', !carouselAutoPlaying);
-    carouselMotionToggle.setAttribute('aria-pressed', String(!carouselAutoPlaying));
-    carouselMotionToggle.setAttribute('aria-label', carouselAutoPlaying ? 'Pause filmstrip' : 'Play filmstrip');
-    if (carouselAutoPlaying) startCarouselAutoScroll();
-    else stopCarouselAutoScroll();
-  });
-}
-
-startCarouselAutoScroll();
-
-filmstrip.addEventListener('transitionend', event => {
-  if (event.propertyName !== 'transform') return;
-  if (carouselIndex === 0) {
-    carouselIndex = originalSlides.length;
-    positionCarousel(false);
-  } else if (carouselIndex === originalSlides.length + 1) {
-    carouselIndex = 1;
-    positionCarousel(false);
-  }
-});
-
-filmstrip.addEventListener('pointerdown', event => {
-  carouselPointerActive = true;
-  carouselDragging = false;
-  dragStartX = event.clientX;
-  dragDeltaX = 0;
-});
-
-filmstrip.addEventListener('pointermove', event => {
-  if (!carouselPointerActive) return;
-  dragDeltaX = event.clientX - dragStartX;
-  if (!carouselDragging && Math.abs(dragDeltaX) < 6) return;
-  if (!carouselDragging) {
-    carouselDragging = true;
-    filmstrip.classList.add('is-dragging');
-    filmstrip.setPointerCapture(event.pointerId);
-    positionCarousel(false);
-  }
-  positionCarousel(false, dragDeltaX);
-});
-
-function finishCarouselDrag(event) {
-  if (!carouselPointerActive) return;
-  carouselPointerActive = false;
-  if (!carouselDragging) {
-    const pointTarget = event?.clientX != null
-      ? document.elementFromPoint(event.clientX, event.clientY)
-      : null;
-    const slide = event?.target?.closest?.('.filmstrip-image')
-      || pointTarget?.closest?.('.filmstrip-image');
-    if (slide && filmstrip.contains(slide)) {
-      suppressCarouselClick = true;
-      openFilmstripModal(slide);
-    }
-    return;
-  }
-  carouselDragging = false;
-  filmstrip.classList.remove('is-dragging');
-  const moved = Math.abs(dragDeltaX) > Math.min(90, carouselStep * .18);
-  if (moved) {
-    suppressCarouselClick = true;
-    moveCarousel(dragDeltaX < 0 ? 1 : -1);
-  } else {
-    positionCarousel(true);
-  }
-}
-
-filmstrip.addEventListener('pointerup', finishCarouselDrag);
-filmstrip.addEventListener('pointercancel', () => finishCarouselDrag());
-
-function openFilmstripModal(slide) {
+function openFilmstripModal(slide, originalSlides) {
   if (!filmstripModal || !filmstripModalContent) return;
-  filmstripModalPreviousFocus = document.activeElement;
-  filmstripModalImages.forEach(image => { image.hidden = true; });
   const sourceSlide = originalSlides[Number(slide.dataset.slideIndex)] || slide;
-  const image = filmstripModalImages.get(sourceSlide);
-  if (!image) return;
-  image.hidden = false;
+  const image = sourceSlide.cloneNode(true);
+  image.className = 'filmstrip-modal__image';
+  image.setAttribute('role', 'img');
+  image.removeAttribute('tabindex');
+  filmstripModalContent.replaceChildren(image);
+  filmstripModalPreviousFocus = document.activeElement;
   if (!filmstripModal.open) filmstripModal.showModal();
-  filmstripModalClose?.focus();
+  filmstripModalClose?.focus({ preventScroll: true });
 }
 
 function closeFilmstripModal() {
   if (!filmstripModal || !filmstripModal.open) return;
   filmstripModal.close();
-  filmstripModalImages.forEach(image => { image.hidden = true; });
+  filmstripModalContent?.replaceChildren();
   filmstripModalPreviousFocus?.focus?.();
   filmstripModalPreviousFocus = null;
 }
 
-filmstrip.addEventListener('click', event => {
-  const slide = event.target.closest('.filmstrip-image');
-  if (!slide || !filmstrip.contains(slide)) return;
-  if (suppressCarouselClick) {
-    suppressCarouselClick = false;
-    return;
-  }
-  openFilmstripModal(slide);
-});
+const carouselInstances = [];
+function initFilmstripCarousel(carousel) {
+  const filmstrip = carousel.querySelector('.filmstrip');
+  if (!filmstrip) return;
+  const originalSlides = [...filmstrip.children];
+  const firstClone = originalSlides[0].cloneNode(true);
+  const lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
+  const carouselId = `filmstrip-track-${carouselInstances.length + 1}`;
+  filmstrip.id = carouselId;
+  carousel.querySelector('.carousel-motion-toggle')?.setAttribute('aria-controls', carouselId);
+  originalSlides.forEach((slide, index) => {
+    slide.dataset.slideIndex = String(index);
+    slide.setAttribute('role', 'button');
+    slide.setAttribute('tabindex', '0');
+    slide.setAttribute('aria-label', `Open filmstrip image ${index + 1}`);
+  });
+  firstClone.setAttribute('aria-hidden', 'true'); firstClone.setAttribute('tabindex', '-1');
+  lastClone.setAttribute('aria-hidden', 'true'); lastClone.setAttribute('tabindex', '-1');
+  filmstrip.appendChild(firstClone); filmstrip.insertBefore(lastClone, originalSlides[0]);
 
-filmstrip.addEventListener('keydown', event => {
-  const slide = event.target.closest('.filmstrip-image');
-  if (!slide || !filmstrip.contains(slide)) return;
-  if (event.key !== 'Enter' && event.key !== ' ') return;
-  event.preventDefault();
-  openFilmstripModal(slide);
-});
+  let index = 1, step = 0, offset = 0, x = null, frame = null, lastTime = 0;
+  let playing = true;
+  const toggle = carousel.querySelector('.carousel-motion-toggle');
+  const measure = () => {
+    const styles = getComputedStyle(filmstrip);
+    step = filmstrip.children[0].getBoundingClientRect().width + parseFloat(styles.gap || 0);
+    offset = parseFloat(getComputedStyle(carousel).getPropertyValue('--carousel-offset')) || 0;
+  };
+  const position = (animate = true, dragOffset = 0) => {
+    filmstrip.style.transition = animate ? 'transform 420ms cubic-bezier(.22,.72,.24,1)' : 'none';
+    x = offset - index * step + dragOffset;
+    filmstrip.style.transform = `translate3d(${x}px,0,0)`;
+  };
+  const move = direction => { index += direction; position(true); };
+  const startAuto = () => {
+    if (frame) cancelAnimationFrame(frame);
+    lastTime = performance.now();
+    const tick = now => {
+      if (!playing) return;
+      const elapsed = Math.min(50, now - lastTime); lastTime = now;
+      {
+        x = (x ?? (offset - index * step)) - 32 * elapsed / 1000;
+        const loopEnd = offset - (originalSlides.length + 1) * step;
+        if (x <= loopEnd) x += originalSlides.length * step;
+        filmstrip.style.transition = 'none'; filmstrip.style.transform = `translate3d(${x}px,0,0)`;
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+  };
+  const stopAuto = () => { if (frame) cancelAnimationFrame(frame); frame = null; };
+  measure(); position(false); startAuto();
+  carousel.querySelector('.carousel-arrow--prev')?.addEventListener('click', () => move(-1));
+  carousel.querySelector('.carousel-arrow--next')?.addEventListener('click', () => move(1));
+  toggle?.addEventListener('click', () => {
+    playing = !playing; toggle.classList.toggle('is-paused', !playing);
+    toggle.setAttribute('aria-pressed', String(!playing));
+    toggle.setAttribute('aria-label', playing ? 'Pause filmstrip' : 'Play filmstrip');
+    playing ? startAuto() : stopAuto();
+  });
+  filmstrip.addEventListener('transitionend', event => {
+    if (event.propertyName !== 'transform') return;
+    if (index === 0) { index = originalSlides.length; position(false); }
+    else if (index === originalSlides.length + 1) { index = 1; position(false); }
+  });
+  filmstrip.addEventListener('click', event => {
+    const slide = event.target.closest('.filmstrip-image');
+    if (!slide || !filmstrip.contains(slide)) return;
+    openFilmstripModal(slide, originalSlides);
+  });
+  filmstrip.addEventListener('keydown', event => {
+    const slide = event.target.closest('.filmstrip-image');
+    if (!slide || !filmstrip.contains(slide) || !['Enter', ' '].includes(event.key)) return;
+    event.preventDefault(); openFilmstripModal(slide, originalSlides);
+  });
+  const instance = { measure, position };
+  carouselInstances.push(instance);
+}
+
+document.querySelectorAll('.filmstrip-carousel').forEach(initFilmstripCarousel);
 
 filmstripModalClose?.addEventListener('click', closeFilmstripModal);
 filmstripModal?.addEventListener('click', event => {
@@ -10746,8 +10643,7 @@ filmstripModal?.addEventListener('cancel', event => {
 });
 
 window.addEventListener('resize', () => {
-  measureCarousel();
-  positionCarousel(false);
+  carouselInstances.forEach(instance => { instance.measure(); instance.position(false); });
 });
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {

@@ -74,6 +74,7 @@ h3,
 }
 
 p {
+  font-size: 0.9rem;
   line-height: 1.5;
 }
 
@@ -961,10 +962,13 @@ button {
 .filmstrip-popup-layer .artifact-popup {
   pointer-events: auto;
   touch-action: none;
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none;    /* Firefox */
-  -ms-user-select: none;     /* IE10+/Edge */
-  user-select: none;         
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
   -webkit-user-drag: none;
   user-drag: none;
   cursor: grab;
@@ -1013,7 +1017,7 @@ button {
   pointer-events: none;
 }
 
-.global-drag-layer > * {
+.global-drag-layer>* {
   pointer-events: auto;
 }
 
@@ -1243,17 +1247,24 @@ h3.email-heading {
   color: #333;
 }
 
-.artifact-popup[data-kind="notes"], .fluxus {
+.artifact-popup[data-kind="notes"],
+.fluxus {
   background: var(--aqua);
 }
 
-.fluxus h1, .fluxus h2, .fluxus h3, .fluxus p {
+.fluxus h1,
+.fluxus h2,
+.fluxus h3,
+.fluxus p {
   color: #000;
 }
 
 .email-invite-popup {
-  right: 10%; bottom: 10%; transform: rotate(-2deg); cursor: grab;
-    background: var(--lime);
+  right: 10%;
+  bottom: 10%;
+  transform: rotate(-2deg);
+  cursor: grab;
+  background: var(--lime);
 
 }
 
@@ -1272,6 +1283,7 @@ h3.email-heading {
   font-size: 0.7rem;
 
 }
+
 .popup-close {
   position: absolute;
   right: 13px;
