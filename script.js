@@ -10024,16 +10024,28 @@ const videoFrames = document.querySelectorAll('.video-frame');
 videoFrames.forEach(frame => {
   const iframe = frame.querySelector('iframe');
   const poster = frame.querySelector('.video-poster');
-  const posterUrl = frame.dataset.poster;
+  const posterImage = poster.querySelector('img');
+  const posterUrl = frame.dataset.poster || poster.dataset.src || posterImage?.getAttribute('src');
   const videoId = frame.dataset.vimeo;
 
-  if (posterUrl) poster.style.backgroundImage = `url("${posterUrl}")`;
-  else if (videoId) {
-    fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${videoId}`)
+  if (posterImage) {
+    posterImage.draggable = false;
+    posterImage.alt ||= frame.dataset.posterLabel || 'Video poster image';
+  }
+  if (posterUrl) {
+    if (!posterImage) poster.style.backgroundImage = `url("${posterUrl}")`;
+    poster.style.backgroundSize = 'cover';
+    poster.style.backgroundPosition = 'center';
+  } else if (videoId) {
+    // Request a large oEmbed thumbnail. Vimeo may still cap this at the
+    // highest resolution available for the video.
+    fetch(`https://vimeo.com/api/oembed.json?url=https://vimeo.com/${videoId}&width=1920`)
       .then(response => response.ok ? response.json() : null)
       .then(data => {
         if (data?.thumbnail_url) {
-          poster.style.backgroundImage = `url("${data.thumbnail_url}")`;
+          const thumbnail = new URL(data.thumbnail_url);
+          if (!thumbnail.searchParams.has('width')) thumbnail.searchParams.set('width', '1920');
+          poster.style.backgroundImage = `url("${thumbnail.href}")`;
           poster.style.backgroundSize = 'cover';
           poster.style.backgroundPosition = 'center';
           poster.textContent = '';
@@ -10563,6 +10575,7 @@ function initFilmstripCarousel(carousel) {
   carousel.querySelector('.carousel-motion-toggle')?.setAttribute('aria-controls', carouselId);
   originalSlides.forEach((slide, index) => {
     slide.dataset.slideIndex = String(index);
+    slide.draggable = false;
     slide.setAttribute('role', 'button');
     slide.setAttribute('tabindex', '0');
     slide.setAttribute('aria-label', `Open filmstrip image ${index + 1}`);
