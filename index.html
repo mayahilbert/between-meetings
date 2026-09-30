@@ -1,0 +1,426 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sarah Rothberg: Between Meetings — interactive exhibition prototype">
+  <title>Sarah Rothberg: Between Meetings</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    html,
+    body {
+      background: #050505;
+    }
+
+    body {
+      opacity: 0;
+    }
+
+    body.is-ready {
+      opacity: 1;
+      transition: opacity .45s ease;
+    }
+  </style>
+</head>
+
+<body class="is-loading" aria-busy="true">
+  <header class="site-header" aria-label="Primary navigation">
+    <a href="#top">New Media Artspace</a>
+    <a href="curatorial-statement.html">Curatorial Statement</a>
+  </header>
+
+  <main id="top">
+    <section class="key-stage" aria-label="Exhibition introduction">
+      <h1 aria-label="Sarah Rothberg: Between Meetings">
+        <div class="key-title__line1" role="presentation" aria-hidden="true"></div>
+        <div class="key-title__line2" role="presentation" aria-hidden="true"></div>
+      </h1>
+      <a class="scroll-indicator" href="#FOREVER-MEETINGS" aria-hidden="true">
+        <span class="scroll-indicator__label">Scroll</span>
+        <span class="scroll-indicator__chevron"></span>
+      </a>
+    </section>
+    <section class="dark-stage" id="FOREVER-MEETINGS" aria-label="Forever Meetings videos">
+      <article class="video-1 video-container">
+        <div class="media-block opening-media" id="opening-video">
+          <div class="video-frame" data-vimeo="1231163604" data-poster=""
+            data-poster-label="IMAGE: FOREVER MEETINGS: SCRAMBLED ZONE">
+            <div class="video-poster dark-image"></div>
+            <iframe title="Opening video"
+              data-src="https://player.vimeo.com/video/1231163604?api=1&title=0&byline=0&portrait=0&controls=1"
+              loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            <button class="play" aria-label="Play FOREVER MEETINGS: SCRAMBLED ZONE video"></button>
+          </div>
+        </div>
+        <div class="caption caption-one">
+          <h2>FOREVER MEETINGS: SCRAMBLED ZONE</h2>
+          <p class="work-info">2025, custom software (black and white, sound), computer, projector or screen</p>
+          <p>FOREVER MEETINGS is a series of software-driven artworks of endlessly evolving conversations between
+            AI-driven avatars.
+            Built in custom real-time software, each iteration runs fully locally (offline). Avatars are given opposing
+            personas, a style of conversation, and a prompt (for instance: “gossip about whether the nuclear family is
+            anti-feminist”), and the dialogue unfolds until the prompts refresh and a new theme begins. SCRAMBLED ZONE,
+            one of the works from the series, contains all of the questions, personas, and styles remixed randomly every
+            3 minutes.
+          </p>
+        </div>
+      </article>
+
+      <section class="text-window-stage" aria-label="Moving exhibition text and notes">
+        <div class="looping-copy" id="looping-copy">
+          <button class="read-toggle read-toggle--floating" type="button" data-read-target="looping-copy__track"
+            aria-controls="looping-copy__track" aria-expanded="false">Read scrolling text</button>
+          <button class="copy-motion-toggle" type="button" aria-label="Pause text" aria-controls="looping-copy__track"
+            aria-pressed="false"><span class="copy-motion-icon" aria-hidden="true"></span></button>
+          <div class="looping-copy__track" id="looping-copy__track" aria-hidden="true">
+            <div class="looping-copy__set"></div>
+          </div>
+        </div>
+
+        <article class="browser-window" aria-label="Scrollable exhibition text window">
+          <div class="browser-window__bar"><i></i><i></i><i></i><button class="read-toggle" type="button"
+              data-read-target="browser-window__content" aria-controls="browser-window__content"
+              aria-expanded="false">Read text</button></div>
+          <div class="browser-window__content" id="browser-window__content" aria-hidden="true">
+            <p></p>
+          </div>
+        </article>
+      </section>
+
+      <article class="video-2 video-container">
+        <div class="media-block second-media" id="artist-video">
+          <div class="video-frame" data-vimeo="1231163604" data-poster="" data-poster-label="IMAGE: is AI worth it?">
+            <div class="video-poster dark-image">
+            </div>
+            <iframe title="Artist video"
+              data-src="https://player.vimeo.com/video/1231163604?api=1&title=0&byline=0&portrait=0&controls=1"
+              loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            <button class="play" aria-label="Play is AI worth it? video"></button>
+          </div>
+        </div>
+        <div class="caption caption-two">
+          <h2>"is AI worth it?"</h2>
+          <p class="work-info">2026, custom software (black and white, sound), screens, computer</p>
+          <p>This variation of the FOREVER MEETINGS series is a diptych featuring two avatars discussing a single
+            question, in this case: "Is AI worth it?".
+          </p>
+          <p>
+            The piece recombines 12 conversation-types with 36 different persona-pairs. The pairs represent opposing
+            thoughts on different aspects of AI. For instance, on the subject of power and AI, a "Community
+            Technologist" (defined in the code as someone who believes Artificial Intelligence can be designed to
+            support mutual aid, decentralization, and community infrastructures outside corporate control) might be in
+            conversation with a "Power Critic" (someone who believes Artificial Intelligence will always centralize
+            power, regardless of intentions, because computation itself scales unevenly and reinforces hierarchy.)
+          </p>
+        </div>
+      </article>
+
+    </section>
+
+    <section class="color-stage">
+      <div class="invitation" id="invitation">
+        <button class="envelope" id="envelope" aria-label="Open invitation video">
+          <span class="envelope__back"></span><span class="envelope__front"></span><span class="envelope__flap"></span>
+        </button>
+        <div class="vimeo-card-container" id="vimeo-card-container" hidden>
+          <div class="vimeo-card" id="vimeo-card">
+            <button class="video-close" aria-label="Close video">×</button>
+
+            <iframe title="Invitation video"
+              data-src="https://player.vimeo.com/video/1231163604?api=1&title=0&byline=0&portrait=0&controls=1"
+              loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+          </div>
+          <div class="caption caption-invite">
+            <h2>INVITATION TO A MEETING</h2>
+            <p class="work-info">2023</p>
+            <p>A video in which the artist puppeted the Sophie Avatar to invite potential participants to meet for the
+              second iteration of NEW MEETINGS.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <article class="video-3 video-container">
+        <div class="media-block media-three" id="media-three">
+          <div class="video-frame" data-vimeo="1231163604" data-poster=""
+            data-poster-label="IMAGE: Three Meetings video">
+            <div class="video-poster pale-image"></div>
+            <iframe title="Three Meetings video"
+              data-src="https://player.vimeo.com/video/1231163604?api=1&title=0&byline=0&portrait=0&controls=1"
+              loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            <button class="play" aria-label="Play Three Meetings video"></button>
+          </div>
+        </div>
+        <div class="caption caption-three">
+          <h2>THREE MEETINGS</h2>
+          <p class="work-info">2023, video produced with custom software and VR headsets, 10:15</p>
+          <p>A compilation of the three types of meeting represented in the SUPERPROMPT body of work: a NEW MEETING
+            between the artist and a human guest (in this case, curator Yvonne Mpwo), a NEW NEW MEETING between the
+            artist, and the avatar embodied by ChatGPT with a unique system prompt, and a FOREVER MEETING (SUPERPROMPT
+            EDITION), where two version of the ChatGPT-em bodied avatar meets with itself.</p>
+        </div>
+      </article>
+      <section class="filmstrip-carousel" aria-label="Video stills carousel">
+        <button class="carousel-arrow carousel-arrow--prev" type="button" aria-label="Previous video still">←</button>
+        <div class="filmstrip-viewport">
+          <div class="filmstrip">
+            <img class="filmstrip-image" src="images/stills/CPRImage.jpg" alt="Video stills carousel background">
+            <img class="filmstrip-image" src="images/stills/SUPERPROMPT_still01.jpg"
+              alt="Video stills carousel background">
+            <img class="filmstrip-image" src="images/stills/SUPERPROMPT_still02.jpg"
+              alt="Video stills carousel background">
+          </div>
+        </div>
+        <button class="carousel-motion-toggle copy-motion-toggle" type="button" aria-label="Pause filmstrip"
+          aria-controls="filmstrip-track" aria-pressed="false">
+          <span class="copy-motion-icon" aria-hidden="true"></span>
+        </button>
+        <button class="carousel-arrow carousel-arrow--next" type="button" aria-label="Next video still">→</button>
+        <button class="filmstrip-alert" id="filmstrip-alert" type="button" aria-label="Open two related images">
+          <span class="filmstrip-alert__dot" aria-hidden="true"></span>
+          <span class="filmstrip-alert__count" aria-hidden="true">2</span>
+        </button>
+        <div class="filmstrip-popup-layer" id="filmstrip-popup-layer" aria-live="polite"></div>
+      </section>
+      <section class="filmstrip-carousel" aria-label="Additional video stills carousel">
+        <button class="carousel-arrow carousel-arrow--prev" type="button" aria-label="Previous additional still">←</button>
+        <div class="filmstrip-viewport">
+          <div class="filmstrip">
+            <img class="filmstrip-image" src="images/stills/FOREVER_MEETINGS_STRANGE_ALIGNMENTS_STILL.jpg" alt="Additional video still one">
+            <img class="filmstrip-image" src="images/stills/forevermeetings_screenshot_art.jpg" alt="Additional video still two">
+            <img class="filmstrip-image" src="images/stills/newmeetings_screenshot_soCloseToTheBigThing.jpg" alt="Additional video still three">
+          </div>
+        </div>
+        <button class="carousel-motion-toggle copy-motion-toggle" type="button" aria-label="Pause additional filmstrip"
+          aria-pressed="false"><span class="copy-motion-icon" aria-hidden="true"></span></button>
+        <button class="carousel-arrow carousel-arrow--next" type="button" aria-label="Next additional still">→</button>
+      </section>
+      <dialog class="filmstrip-modal" id="filmstrip-modal" aria-labelledby="filmstrip-modal-title">
+        <h2 class="filmstrip-modal__title" id="filmstrip-modal-title">Filmstrip image</h2>
+        <button class="filmstrip-modal__close" type="button" aria-label="Close enlarged image">×</button>
+        <div class="filmstrip-modal__content"></div>
+      </dialog>
+      <article class="video-4 video-container">
+        <div class="media-block media-four" id="media-four">
+          <div class="video-frame" data-vimeo="1231163604" data-poster="" data-poster-label="IMAGE: NEW MEETINGS video">
+            <div class="video-poster magenta-image"></div>
+            <iframe title="NEW MEETINGS video"
+              data-src="https://player.vimeo.com/video/1231163604?api=1&title=0&byline=0&portrait=0&controls=1"
+              loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            <button class="play" aria-label="Play NEW MEETINGS video"></button>
+          </div>
+        </div>
+        <div class="caption caption-four">
+          <h2>NEW MEETINGS (SUPERPROMPT EDITION) with Nina Sobell</h2>
+          <p class="work-info">2023, video produced with custom software and VR headsets, 9:48</p>
+          <p>In NEW MEETINGS (SUPERPROMPT EDITION), the artist reprised their original NEW MEETINGS performance, this
+            time with all participants embodying the same avatar, and sometimes including ChatGPT as a participant. In
+            the SUPERPROMPT body of work, in which the artist plays with the "persona" layer of LLM chatbots, the avatar
+            is referred to as "Sophie" - a name pulled from a ChatGPT hallucinated work by the artist. This meeting is
+            an edit of a conversation with the artist Nina Sobell, who the artist met for the first time inside of this
+            virtual space. </p>
+        </div>
+      </article>
+
+      <section class="document-workspace" aria-label="Ephemera from NEW MEETINGS">
+        <article class="document-card draggable" id="main-document">
+          <h3 class="email-heading"><strong>NEW MEETINGS - Invitation to participate</strong></h3>
+          <p>Hello!</p>
+          <p>I am debuting a new experimental VR performance piece, called
+            <em>NEW MEETINGS,</em> at the
+            upcoming <a href="#" class="artifact-link" data-artifact="onx">ONX
+              showcase</a> (in partnership with Tribeca), and am seeking some
+            wonderful participants/collaborators/interlocutors!
+          </p>
+          <p>In short short, it is: experimental conversations performed between two
+            people in a shared dynamic Virtual Reality space which will be streamed and later edited into short video
+            work.&nbsp;</p>
+          <p>In longer: you would share a virtual space with me, one-on-one, for about
+            20 minutes, one day between June 9-20. We will both be in a VR setup, physically set up at ONX studio (645
+            5th Ave, New York, NY). There is nothing you need to do or know in advance to prepare, and you don't need
+            to be a performer, but you should feel comfortable being guided through a set of open-ended poetic
+            conversational prompts. You can think of it a bit like we'll be following a <a
+              href="#" class="artifact-link" data-artifact="fluxus">Fluxus
+              score</a> or a having a <a
+              href="#" class="artifact-link" data-artifact="bohm">Bohm
+              dialogue</a>.&nbsp; During the experience, your identity will be
+            anonymized unless you choose to share it - in fact, I won't even know who you are (until after) because
+            we'll be in different rooms! (you'll be in a private space upstairs)&nbsp;</p>
+          <p>Together, we'll be co-creating a 2D screen-based artwork in real-time
+            generated by our conversation and movement, streamed onto a screen at ONX and online for a small live
+            audience. These will be edited together at a later date into a video piece.</p>
+          <p>There is a stipend ($50) available for your participation, nothing will be
+            included in the edited video without your permission, and you will have a credit in the final work (should
+            you choose to be included!). You can also have the full video of our conversation if you'd like it!
+          </p>
+          <p>My wish for all participants: it will be a kind of hopeful new connection
+            at a transitional moment in time! My wish for the audience: an invitation to appreciate the miraculous
+            possibilities in different ways of connecting.</p>
+          <p><strong>If you would like to participate, </strong><a
+              href="#" class="artifact-link" data-artifact="form"><strong>please fill&nbsp; out this form</strong></a><strong>.
+              Feel free to share with others who </strong><strong>might want to participate!&nbsp;</strong></p>
+          <p>🖤<strong>Sarah (Rothberg, in case someone sent this to
+              you)</strong></p>
+          <p><a
+              href="https://docs.google.com/document/d/1ZLOnVo87Qk1eGL3sEZ7Ev-sXTlE3kJI2Gv7TI9vml2g/edit?usp=sharing"><span
+                style="font-weight: 400;">More info about the project can be found here</a></p>
+          <img src="images/rothberg-email-sig.gif" class="email-sig-gif">
+        </article>
+        <div class="popup-layer" id="popup-layer" aria-live="polite">
+          <article class="artifact-popup draggable email-invite-popup" data-kind="email-invite" role="dialog" aria-modal="false"
+            aria-label="Exhibition document" id="email-invite-popup">
+            <button class="popup-close" aria-label="Close document">×</button>
+            <div class="padded-content email-invite">
+              <div class="email-header">
+                <span class="email-from"><strong>CHANNEL WHATEVER</strong> &lt;whateverdotbiz@gmail.com&gt;</span> <span
+                  class="email-date">Fri, Jun 4, 2021 at 4:33 PM</span>
+              </div>
+              <p class="email-to">To:
+              </p>
+              <p>Hi Chike!!</p>
+              <p>You are receiving this email because you signed up to participate in Sarah Rothberg’s New Meetings
+                performance. We have come up with a preliminary date and time for you
+                to attend and participate in said performance! My name is Savannah and I’m working with Sarah as her
+                scheduling point person! If you do indeed end up participating in the
+                event I will most likely be the one communicating with you on the day of for where to go, etc.
+                Below is that date and time which should correspond with your identified availability. Please RSVP or
+                shoot an email back confirming that this time still works for you so we
+                can lock you in. If the date you’ve been assigned no longer works, let us know!</p>
+              <p>On the day of the performance please come 10 minutes early so you can get situated. I will be sending
+                out another email with some more information on whether or not New
+                Meetings participants will be able to attend the rest of the showcase/other performances, so look out
+                for that.
+              </p>
+              <p>Thank you so much for participating and we look forward to seeing you soon!</p>
+              <p class="email-invite-box">Date: June 14th. Time: 5:30pm<br>
+                Address: 645 Fifth Avenue<br>
+                (Enter on 51st or 52nd)</p>
+              <p class="email-signature">Best,
+                Savannah Phillips-Falk</p>
+            </div>
+          </article>
+
+
+        </div>
+      </section>
+      <article class="video-6 video-container">
+        <div class="media-block media-six" id="media-6">
+          <div class="video-frame" data-vimeo="1231163604" data-poster=""
+            data-poster-label="IMAGE: Just the Agreements video">
+            <div class="video-poster final-image"></div>
+            <iframe title="Just the Agreements video"
+              data-src="https://player.vimeo.com/video/1231163604?api=1&title=0&byline=0&portrait=0&controls=1"
+              loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            <button class="play" aria-label="Play Just the Agreements video"></button>
+          </div>
+        </div>
+        <div class="caption caption-five">
+          <h2>NEW MEETINGS with X</h2>
+          <p class="work-info">2021, video produced with custom software and VR headsets</p>
+          <p>A meeting between Sarah and X, unedited (as originally livestreamed / projected into the gallery space in
+            real-time). </p>
+        </div>
+      </article>
+      <article class="video-5 video-container">
+        <div class="media-block final-media" id="final-video">
+          <div class="video-frame" data-vimeo="1231163604" data-poster=""
+            data-poster-label="IMAGE: Just the Agreements video">
+            <div class="video-poster final-image"></div>
+            <iframe title="Just the Agreements video"
+              data-src="https://player.vimeo.com/video/1231163604?api=1&title=0&byline=0&portrait=0&controls=1"
+              loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
+            <button class="play" aria-label="Play Just the Agreements video"></button>
+          </div>
+        </div>
+        <div class="caption caption-five">
+          <h2>Just the Agreements</h2>
+          <p class="work-info">2021, video produced with custom software and VR headsets, 46:13</p>
+          <p>NEW MEETINGS (Just the Agreements) is a supercut of the beginning of the conversations staged for the
+            original version of NEW MEETINGS.
+          </p>
+          <p>
+            NEW MEETINGS is a real-time animated performance in which the artist and an anonymous guest meet in a
+            virtual environment (using VR headsets) to have an "open ended meeting about whatever." Each meeting begins
+            with a short meta-converation about how the conversation could unfold. As each speaker talks, the platform
+            they are on rises. The meeting "ends" when both speakers have reached an orb high above their starting
+            point, and agree to touch the orb.
+          </p>
+        </div>
+      </article>
+    </section>
+    <section class="credits">
+      <div class="credits-container">
+        <h2>CREDITS</h2>
+        <h3><em>For (original) NEW MEETINGS</em></h3>
+        <p>Key collaborator/Networking Engineer: Nate Turley</p>
+        <p>Production Assistant: Savannah Phillips-Falk</p>
+        <p>Participants: GL Genco, Molly Soda, Rogue Fong, Austin Robey, Andrew Demirjian, Johann Diedrick, David Byrne,
+          David Lobser, Andrew Rosenbaum, Noya Kohavi, Alexa Schonhaut, Helen Shaw, Loren Hammonds, Michelle Shofet,
+          Bobby
+          Wooten, Chike Ohayia, Travis Korte, Kinlaw, Yeseul Song, Luisa Pereira, Mark Russel, Claire Hentschker,
+          Christopher Clary, Karen Wong, Kelsa Trom, Savannah Phillips-Falk</p>
+        <p>Production Support: Onassis ONX</p>
+        <h3><em>For THREE MEETINGS</em></h3>
+        <p>AI Developer: Aaron Meyers</p>
+        <p>Additional Software Development: Yuan Peng</p>
+        <p>Soundscape: Nailah Hunter</p>
+        <p>Participant: Yvonne Mpwo&nbsp;</p>
+        <p>Production Support: bitforms, the Jerome Foundation, Onassis ONX</p>
+        <h3><em>For NEW MEETINGS (SUPERPROMPT EDITION) with Nina Sobell</em></h3>
+        <p>AI Developer: Aaron Meyers</p>
+        <p>Additional Software Development: Yuan Peng</p>
+        <p>Producer and additional editing: Savannah Phillips-Falk</p>
+        <p>Soundscape: Nailah Hunter</p>
+        <p>Participant: Nina Sobell</p>
+        <p>Production Support: bitforms, the Jerome Foundation, Onassis ONX</p>
+        <h3><em>FOR FOREVER MEETINGS</em></h3>
+        <p>AI System Engineer: Yotam Mann</p>
+        <p>Unity Development + Generative Animation System: Marpi</p>
+        <p>Original Soundscape: Nailah Hunter</p>
+        <p>Production Assistant: Han Zhang</p>
+        <p>Production Support: bitforms, the Jerome Hill Foundation, Onassis ONX</p>
+        <br />
+        <h2>SOFTWARE AND LIBRARIES USED:</h2>
+        <h3><em>Works from the NEW MEETINGS original series</em></h3>
+        <p>Adobe Medium: Avatar Creation</p>
+        <p>Unity3d: Game Engine</p>
+        <p>FinalIK, Motion Capture/Animation system for VR: P&auml;rtel Lang</p>
+        <p>Open-Source Unity Effects: Keijiro Takahashi</p>
+        <p>NormalVR: Networking</p>
+        <p>VoiceMod: Voice Effects</p>
+        <p>OBS: Broadcast/Capture Software</p>
+        <br />
+        <h3><em>Works from the SUPERPROMPT series</em></h3>
+        <p>Adobe Medium: Avatar Creation</p>
+        <p>OpenAI's GPT4: Language Model</p>
+        <p>LangChain: Wrapper for GPT4</p>
+        <p>Unity3d: Game Engine</p>
+        <p>FinalIK, Motion Capture/Animation system for VR: P&auml;rtel Lang</p>
+        <p>Open-Source Unity Effects: Keijiro Takahashi</p>
+        <p>Microsoft Azure: Speech to Text, Text to Speech</p>
+        <p>NormalVR: Networking</p>
+        <p>VoiceMod: Voice Effects</p>
+        <p>OBS: Broadcast/Capture Software</p>
+        <h3><em>Works from FOREVER MEETINGS series</em></h3>
+        <p>Adobe Medium: Avatar Creation</p>
+        <p>OBS: Broadcast/Capture Software</p>
+        <p>Ollama + Llama 3.2 (LLM)</p>
+        <p>NodeJS</p>
+        <p>Unity3d</p>
+        <p>Coqui AI (TTS)</p>
+      </div>
+    </section>
+  </main>
+
+  <!--<footer class="site-footer">
+    <a href="#top">New Media Artspace</a>
+    <a class="exhibition-title" href="#top"><strong>Sarah Rothberg:</strong><span>Between Meetings</span></a>
+    <a href="#about">About the Exhibition</a>
+  </footer>-->
+  <div class="global-drag-layer" id="global-drag-layer"></div>
+  <script src="script.js"></script>
+</body>
+
+</html>
