@@ -45,7 +45,7 @@
 
 html {
   scroll-behavior: smooth;
-  height: 100%;
+  min-height: 100%;
 }
 
 body {
@@ -117,6 +117,17 @@ button {
 .site-header> :last-child,
 .site-footer> :last-child {
   text-align: right;
+}
+
+.curatorial-statement-body {
+  min-height: 100%;
+  position: initial;
+ background: linear-gradient(to bottom, #206796, #889260);
+  background-repeat: no-repeat;}
+
+.curatorial-statement {
+  max-width: 70ch;
+  margin: 10% 0 10vw 10%;
 }
 
 .key-stage {
@@ -1164,14 +1175,13 @@ h3.email-heading {
   z-index: 10;
   width: 540px;
   min-width: 280px;
-  min-height: 180px;
+  min-height: 0;
   max-width: min(90vw, 760px);
-  max-height: min(70vh, 560px);
+  height: min(50vh, 90vh);
+  max-height: min(50vh, 90vh);
   color: #10241e;
   cursor: grab;
-  overflow-x: hidden;
-  overflow-y: auto;
-  touch-action: pan-y;
+  overflow: hidden;
   border: 1px solid #4a4a4a;
   -webkit-user-select: none;
   /* Safari */
@@ -1186,6 +1196,20 @@ h3.email-heading {
 
 .artifact-popup .padded-content {
   padding: 2rem;
+}
+
+.email-invite-popup > .padded-content {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+}
+
+.artifact-popup__scroll {
+  position: absolute;
+  inset: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  touch-action: pan-y;
 }
 
 .artifact-popup h3 {
@@ -1219,7 +1243,7 @@ h3.email-heading {
 
 .popup-resize-handle {
   position: absolute;
-  z-index: 2;
+  z-index: 4;
   right: 0;
   bottom: 0;
   width: 24px;
@@ -1296,6 +1320,7 @@ h3.email-heading {
 
 .popup-close {
   position: absolute;
+  z-index: 3;
   right: 13px;
   top: 8px;
   border: 0;

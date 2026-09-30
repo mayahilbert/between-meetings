@@ -10386,6 +10386,14 @@ function makePopupResizable(popup) {
   handle.addEventListener('pointercancel', finish);
 }
 
+function fitArtifactPopupHeight(popup) {
+  const scrollContent = popup.querySelector('.artifact-popup__scroll, .padded-content');
+  if (!scrollContent) return;
+  const maxHeight = Math.min(window.innerWidth * 0.5, window.innerHeight * 0.9);
+  const contentHeight = scrollContent.scrollHeight + 2;
+  popup.style.height = `${Math.min(maxHeight, contentHeight)}px`;
+}
+
 function createArtifactPopup(kind, opener = null, shouldFocus = true) {
   const content = popupContent[kind];
   const isFilmstripPopup = kind.startsWith('filmstrip');
@@ -10400,10 +10408,11 @@ function createArtifactPopup(kind, opener = null, shouldFocus = true) {
   popup.style.left = `${isFilmstripPopup ? 24 + ((popupCount * 38) % 120) : 790 + ((popupCount * 83) % 210)}px`;
   popup.style.top = `${isFilmstripPopup ? 18 + ((popupCount * 27) % 60) : 35 + ((popupCount * 127) % 410)}px`;
   popup.style.transform = `rotate(${[-2, 1.5, -0.5][popupCount % 3]}deg)`;
-  popup.innerHTML = `<button class="popup-close" aria-label="Close document">×</button>${popupMarkup(content)}<span class="popup-resize-handle" aria-hidden="true"></span>`;
+  popup.innerHTML = `<button class="popup-close" aria-label="Close document">×</button><div class="artifact-popup__scroll">${popupMarkup(content)}</div><span class="popup-resize-handle" aria-hidden="true"></span>`;
   targetLayer?.appendChild(popup);
   bringToFront(popup);
   if (isFilmstripPopup) popup.addEventListener('pointerdown', event => event.stopPropagation());
+  fitArtifactPopupHeight(popup);
   keepPopupInWorkspace(popup);
   promoteToGlobal(popup);
   makePopupResizable(popup);
@@ -10531,6 +10540,7 @@ function makeDraggable(element, leavesTrail) {
 
 makeDraggable(mainDocument, true);
 makeDraggable(emailInvite, false);
+if (emailInvite) fitArtifactPopupHeight(emailInvite);
 emailInvite?.querySelector('.popup-close')?.addEventListener('click', () => {
   emailInvite.hidden = true;
 });
