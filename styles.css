@@ -326,7 +326,7 @@ button {
   transition: opacity .18s ease;
 }
 
-.video-poster > img {
+.video-poster>img {
   display: block;
   width: 100%;
   height: 100%;
