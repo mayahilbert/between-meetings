@@ -2058,8 +2058,6 @@ const LOOPING_COPY_LOG = String.raw`
     }`;
 
 const BROWSER_WINDOW_LOG = String.raw`
-
-
 -----
 Question: Is gatekeeping always bad?
 Phase: Passive-Aggressive
@@ -9987,11 +9985,16 @@ envelope.addEventListener('click', () => {
   }, 900);
 });
 
+function pauseVimeo(iframe) {
+  if (!iframe?.contentWindow) return;
+  const message = JSON.stringify({ method: 'pause' });
+  iframe.contentWindow.postMessage(message, 'https://player.vimeo.com');
+  iframe.contentWindow.postMessage({ method: 'pause' }, 'https://player.vimeo.com');
+  iframe.dataset.playRequested = 'false';
+}
+
 document.querySelector('.video-close').addEventListener('click', () => {
-  const invitationIframe = vimeoCard.querySelector('iframe');
-  if (invitationIframe?.contentWindow) {
-    invitationIframe.contentWindow.postMessage({ method: 'pause' }, 'https://player.vimeo.com');
-  }
+  pauseVimeo(vimeoCard.querySelector('iframe'));
   vimeoCardContainer.hidden = true;
   envelope.hidden = false;
   envelope.classList.remove('is-open');
@@ -10098,8 +10101,17 @@ let popupCount = 0;
 let topZIndex = 10;
 const globalDragLayer = document.querySelector('#global-drag-layer');
 
+function syncDocumentWorkspaceHeight() {
+  if (!workspace || !mainDocument || mainDocument.parentElement === globalDragLayer) return;
+  const workspaceRect = workspace.getBoundingClientRect();
+  const documentRect = mainDocument.getBoundingClientRect();
+  const requiredHeight = Math.ceil(documentRect.bottom - workspaceRect.top + 80);
+  workspace.style.minHeight = `${Math.max(0, requiredHeight)}px`;
+}
+
 function syncTrailHeights() {
   if (!mainDocument) return;
+  syncDocumentWorkspaceHeight();
   const height = mainDocument.getBoundingClientRect().height;
   documentTrail.forEach(trail => {
     trail.style.setProperty('--trail-height', `${height}px`);
@@ -10159,6 +10171,11 @@ function addTrailSheet(left, top) {
 addTrailSheet('10px', '182px');
 
 addTrailSheet('18px', '172px');
+syncTrailHeights();
+
+if (mainDocument && 'ResizeObserver' in window) {
+  new ResizeObserver(syncTrailHeights).observe(mainDocument);
+}
 
 const popupContent = {
   email: `<div class="padded-content email-invite">
@@ -10269,10 +10286,10 @@ fluxus: `<div class="padded-content fluxus"><h1>Selected Fluxus Event Scores</h1
 <p>(1965)</p>
 <p>Word event</p>
 <p>Write a word or words on the enclosed card and place it somewhere. Please tell me the word and the place, which will be edited on the world map.</p></div>`,
+info: `<figure class="artifact-popup__figure"><img draggable="false" src="images/NEW MEETINGS-Page_1.jpg" alt="Information about the Sophie artwork."></figure><figure class="artifact-popup__figure"><img draggable="false" src="images/NEW MEETINGS-Page_2.jpg" alt="Information about the Sophie artwork."></figure><figure class="artifact-popup__figure"><img draggable="false" src="images/NEW MEETINGS-Page_3.jpg" alt="Information about the Sophie artwork."></figure><figure class="artifact-popup__figure"><img draggable="false" src="images/NEW MEETINGS-Page_4.jpg" alt="Information about the Sophie artwork."></figure><figure class="artifact-popup__figure"><img draggable="false" src="images/NEW MEETINGS-Page_5.jpg" alt="Information about the Sophie artwork."></figure>`,
 onx: { type: 'image', src: 'images/ONX_HD.webp', alt: 'ONX Showcase 2021 Flyer.'},
   form: { type: 'image', src: 'images/participant-form.png', alt: 'Screenshot of a Google form with a purple background.'},
   bohm: { type: 'image', src: 'images/wiki-bohm.png', alt: 'Screenshot of a Bohm Dialogue page on Wikipedia.'},
-  notes: '<div class="padded-content"><h3>Production Notes</h3><p>Meeting length: variable<br>Location: browser window<br>Materials: voice, cursor, invitation, delay.</p><p>This panel is reserved for the real working notes.</p></div>',
   filmstripImageOne: { type: 'image', src: 'images/chatGPTMadeUpArtworks.png', alt: 'Screenshot of a conversation between Sarah Rothberg and ChatGPT where ChatGPT lists works by Rothberg, including one titled Sophie.', caption: 'chatGPTMadeUpArtworks.png' },
   filmstripImageTwo: { type: 'image', src: 'images/chatGPTMakingStuffUpAboutSophie.png', alt: 'Screenshot of a conversation between Sarah Rothberg and ChatGPT where ChatGPT explains the premise of a made-up artwork performed by Rothberg called Sophie. In the work, Rothberg inhabits an avatar called Sophie.', caption: 'chatGPTMakingStuffUpAboutSophie.png' },
   // Add image popups with this shape:
@@ -10761,6 +10778,29 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     target.scrollIntoView({ behavior: 'smooth' });
   });
 });
+
+const loopingNext = document.querySelector('.text-window-stage > .looping-copy__next');
+const loopingSection = document.querySelector('.text-window-stage');
+const documentNext = document.querySelector('.document-workspace__next');
+const documentSection = document.querySelector('.document-workspace');
+let loopingNextFrame = 0;
+const updateLoopingNext = () => {
+  loopingNextFrame = 0;
+  if (loopingNext && loopingSection) {
+    const sectionRect = loopingSection.getBoundingClientRect();
+    loopingNext.classList.toggle('is-fixed', sectionRect.top < window.innerHeight && sectionRect.bottom > window.innerHeight);
+  }
+  if (documentNext && documentSection) {
+    const sectionRect = documentSection.getBoundingClientRect();
+    documentNext.classList.toggle('is-fixed', sectionRect.top < window.innerHeight && sectionRect.bottom > window.innerHeight);
+  }
+};
+const scheduleLoopingNextUpdate = () => {
+  if (!loopingNextFrame) loopingNextFrame = window.requestAnimationFrame(updateLoopingNext);
+};
+window.addEventListener('scroll', scheduleLoopingNextUpdate, { passive: true });
+window.addEventListener('resize', scheduleLoopingNextUpdate);
+scheduleLoopingNextUpdate();
 
 const revealPage = () => {
   document.body.classList.remove('is-loading');
