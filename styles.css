@@ -1955,7 +1955,7 @@ h3.email-heading {
   }
 
   .key-stage {
-    background: url("images/between-meetings-key-bg.jpg"), linear-gradient(to bottom, #206796, #889260);
+    background: url("images/between-meetings-key-bg.jpg"), linear-gradient(to bottom, #206796, #889260, #000);
     background-size: contain, cover;
     background-position: center;
     background-repeat: no-repeat;
