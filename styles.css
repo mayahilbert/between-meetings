@@ -611,7 +611,7 @@ hr {
 
 .looping-copy__next {
   position: absolute;
-  z-index: 6;
+  z-index: 10000;
   top: auto;
   bottom: 1.25rem;
   right: 1rem;
