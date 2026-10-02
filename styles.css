@@ -996,7 +996,7 @@ hr {
 
 .vimeo-card {
   position: relative;
-  width: clamp(430px, 600px, 90vw);
+  width: clamp(250px, 600px, 90vw);
   max-width: 100%;
   aspect-ratio: 16 / 9;
   background: black;
@@ -2025,10 +2025,11 @@ h3.email-heading {
     top: auto;
     bottom: 1rem;
     margin-left: 10px;
+    z-index: 10000;
   }
 
   .looping-copy__next.is-fixed {
-    top: calc(100svh - 4rem);
+    top: calc(100svh - 2rem);
     bottom: auto;
     margin-left: 2rem;
   }
