@@ -9979,7 +9979,10 @@ envelope.addEventListener('click', () => {
   window.setTimeout(() => {
     envelope.hidden = true;
     vimeoCardContainer.hidden = false;
-    vimeoCardContainer.classList.add('is-open')
+    vimeoCardContainer.classList.add('is-open');
+    // Reveal the player immediately; playback may already be buffered or its
+    // iframe load event may have completed before the play request.
+    vimeoCard.classList.add('is-active');
     playVimeo(vimeoCard.querySelector('iframe'), () => vimeoCard.classList.add('is-active'));
   }, 900);
 });
@@ -10097,6 +10100,14 @@ let popupCount = 0;
 let topZIndex = 10;
 const globalDragLayer = document.querySelector('#global-drag-layer');
 
+function syncTrailHeights() {
+  if (!mainDocument) return;
+  const height = mainDocument.getBoundingClientRect().height;
+  documentTrail.forEach(trail => {
+    trail.style.setProperty('--trail-height', `${height}px`);
+  });
+}
+
 function promoteToGlobal(element) {
   if (!globalDragLayer || element.parentElement === globalDragLayer) return;
   const rect = element.getBoundingClientRect();
@@ -10134,6 +10145,9 @@ function addTrailSheet(left, top) {
   trail.className = 'trail-card';
   trail.style.left = left;
   trail.style.top = top;
+  if (mainDocument) {
+    trail.style.setProperty('--trail-height', `${mainDocument.getBoundingClientRect().height}px`);
+  }
   if (mainDocument?.parentElement === globalDragLayer) {
     trail.style.position = 'absolute';
     globalDragLayer.appendChild(trail);
@@ -10390,14 +10404,56 @@ function fitArtifactPopupHeight(popup) {
   const scrollContent = popup.querySelector('.artifact-popup__scroll, .padded-content');
   if (!scrollContent) return;
   const maxHeight = Math.min(window.innerWidth * 0.5, window.innerHeight * 0.9);
+  // Temporarily return the content to normal flow so its natural height can
+  // be measured independently of the popup's scroll viewport.
+  const previous = {
+    popupHeight: popup.style.height,
+    position: scrollContent.style.position,
+    inset: scrollContent.style.inset,
+    overflow: scrollContent.style.overflow
+  };
+  popup.style.height = 'auto';
+  scrollContent.style.position = 'static';
+  scrollContent.style.inset = 'auto';
+  scrollContent.style.overflow = 'visible';
   const contentHeight = scrollContent.scrollHeight + 2;
+  scrollContent.style.position = previous.position;
+  scrollContent.style.inset = previous.inset;
+  scrollContent.style.overflow = previous.overflow;
+  if (contentHeight <= 2 && popup.querySelector('img:not([complete])')) return;
   popup.style.height = `${Math.min(maxHeight, contentHeight)}px`;
+}
+
+function placePopupInSection(popup, opener, localLeft, localTop) {
+  const section = opener?.closest('section') || workspace?.closest('section');
+  const sectionRect = section?.getBoundingClientRect();
+  const isMainDocumentPopup = popup.dataset.filmstripPopup !== 'true';
+  const rightEdge = window.scrollX + document.documentElement.clientWidth;
+  const isFilmstripPopup = !isMainDocumentPopup;
+  const left = isMainDocumentPopup
+    ? Math.max(8, rightEdge - popup.offsetWidth - 24)
+    : window.scrollX + Math.max(8, (document.documentElement.clientWidth - popup.offsetWidth) / 2);
+  const top = isFilmstripPopup
+    ? window.scrollY + Math.max(8, (window.innerHeight - popup.offsetHeight) / 2)
+    : (sectionRect?.top || 0) + window.scrollY + localTop;
+  popup.style.position = 'absolute';
+  popup.style.left = `${left}px`;
+  popup.style.top = `${top}px`;
+  popup.style.right = 'auto';
+  popup.style.bottom = 'auto';
+  popup.dataset.originSection = section?.id || '';
+}
+
+function centerPopupVertically(popup, target) {
+  if (!popup || !target) return;
+  const targetRect = target.getBoundingClientRect();
+  const top = targetRect.top + window.scrollY + (targetRect.height - popup.offsetHeight) / 2;
+  popup.style.top = `${Math.max(8, top)}px`;
 }
 
 function createArtifactPopup(kind, opener = null, shouldFocus = true) {
   const content = popupContent[kind];
   const isFilmstripPopup = kind.startsWith('filmstrip');
-  const targetLayer = isFilmstripPopup ? filmstripPopupLayer : popupLayer;
   const popup = document.createElement('article');
   popup.className = 'artifact-popup draggable';
   popup.dataset.kind = kind;
@@ -10405,16 +10461,21 @@ function createArtifactPopup(kind, opener = null, shouldFocus = true) {
   popup.setAttribute('role', 'dialog');
   popup.setAttribute('aria-modal', 'false');
   popup.setAttribute('aria-label', content?.alt || 'Exhibition document');
-  popup.style.left = `${isFilmstripPopup ? 24 + ((popupCount * 38) % 120) : 790 + ((popupCount * 83) % 210)}px`;
-  popup.style.top = `${isFilmstripPopup ? 18 + ((popupCount * 27) % 60) : 35 + ((popupCount * 127) % 410)}px`;
-  popup.style.transform = `rotate(${[-2, 1.5, -0.5][popupCount % 3]}deg)`;
+  const localLeft = isFilmstripPopup ? 24 + ((popupCount * 38) % 120) : 40 + ((popupCount * 83) % 210);
+  const localTop = isFilmstripPopup ? 18 + ((popupCount * 27) % 60) : 35 + ((popupCount * 127) % 410);
+  popup.style.transform = isFilmstripPopup
+    ? 'none'
+    : `rotate(${[-2, 1.5, -0.5][popupCount % 3]}deg)`;
   popup.innerHTML = `<button class="popup-close" aria-label="Close document">×</button><div class="artifact-popup__scroll">${popupMarkup(content)}</div><span class="popup-resize-handle" aria-hidden="true"></span>`;
-  targetLayer?.appendChild(popup);
+  globalDragLayer?.appendChild(popup);
   bringToFront(popup);
   if (isFilmstripPopup) popup.addEventListener('pointerdown', event => event.stopPropagation());
   fitArtifactPopupHeight(popup);
-  keepPopupInWorkspace(popup);
-  promoteToGlobal(popup);
+  placePopupInSection(popup, opener, localLeft, localTop);
+  popup.querySelectorAll('img').forEach(image => {
+    if (!image.complete) image.addEventListener('load', () => fitArtifactPopupHeight(popup), { once: true });
+  });
+  requestAnimationFrame(() => fitArtifactPopupHeight(popup));
   makePopupResizable(popup);
   if (isFilmstripPopup) makeFilmstripPopupDraggable(popup);
   else makeDraggable(popup, false);
@@ -10422,7 +10483,7 @@ function createArtifactPopup(kind, opener = null, shouldFocus = true) {
   const removePopup = () => {
     popup.remove();
     if (isFilmstripPopup) resetFilmstripRevealsIfClosed();
-    if (opener?.isConnected) opener.focus();
+    if (opener?.isConnected) opener.focus({ preventScroll: true });
   };
   close.addEventListener('click', removePopup);
   popup.addEventListener('keydown', event => {
@@ -10431,7 +10492,7 @@ function createArtifactPopup(kind, opener = null, shouldFocus = true) {
       removePopup();
     }
   });
-  if (shouldFocus) close.focus();
+  if (shouldFocus) close.focus({ preventScroll: true });
   popupCount += 1;
   return popup;
 }
@@ -10459,6 +10520,7 @@ filmstripAlert?.addEventListener('click', event => {
 updateFilmstripAlert();
 
 window.addEventListener('resize', () => {
+  syncTrailHeights();
   popupLayer.querySelectorAll('.artifact-popup').forEach(keepPopupInWorkspace);
   filmstripPopupLayer?.querySelectorAll('.artifact-popup').forEach(keepPopupInWorkspace);
 });
@@ -10480,6 +10542,7 @@ function makeDraggable(element, leavesTrail) {
       if (event.clientX >= rect.right - 24 && event.clientY >= rect.bottom - 24) return;
     }
 
+    event.preventDefault();
     if (!isBrowserWindow) promoteToGlobal(element);
 
     // The browser window starts centered with a CSS transform. Convert that
@@ -10493,10 +10556,20 @@ function makeDraggable(element, leavesTrail) {
     }
 
     active = true;
-    element.setPointerCapture(event.pointerId);
+    try { element.setPointerCapture(event.pointerId); } catch { /* pointer capture can fail during reparenting */ }
     const rect = element.getBoundingClientRect();
-    offsetX = event.clientX - rect.left;
-    offsetY = event.clientY - rect.top;
+    const isGlobal = element.parentElement === globalDragLayer;
+    if (isGlobal) {
+      // Use the untransformed page coordinates so rotated images do not jump
+      // when the pointerdown offset is calculated from their visual bounds.
+      const pageLeft = parseFloat(element.style.left) || (rect.left + window.scrollX);
+      const pageTop = parseFloat(element.style.top) || (rect.top + window.scrollY);
+      offsetX = event.clientX + window.scrollX - pageLeft;
+      offsetY = event.clientY + window.scrollY - pageTop;
+    } else {
+      offsetX = event.clientX - rect.left;
+      offsetY = event.clientY - rect.top;
+    }
     element.style.cursor = 'grabbing';
   });
 
@@ -10533,20 +10606,107 @@ function makeDraggable(element, leavesTrail) {
     element.style.top = `${y}px`;
   });
 
-  const finish = () => { active = false; element.style.cursor = 'grab'; };
+  const finish = event => {
+    active = false;
+    if (event?.pointerId != null) element.releasePointerCapture?.(event.pointerId);
+    element.style.cursor = 'grab';
+  };
   element.addEventListener('pointerup', finish);
   element.addEventListener('pointercancel', finish);
 }
 
 makeDraggable(mainDocument, true);
+if (emailInvite) promoteToGlobal(emailInvite);
 makeDraggable(emailInvite, false);
-if (emailInvite) fitArtifactPopupHeight(emailInvite);
+if (emailInvite) {
+  fitArtifactPopupHeight(emailInvite);
+  centerPopupVertically(emailInvite, mainDocument);
+}
 emailInvite?.querySelector('.popup-close')?.addEventListener('click', () => {
   emailInvite.hidden = true;
 });
 
 const browserWindow = document.querySelector('.browser-window');
 if (browserWindow) makeDraggable(browserWindow, false);
+
+// Add or remove .draggable-image elements in the HTML to change the count.
+function makeDraggableImageResizable(frame) {
+  const handle = frame.querySelector('.draggable-image__resize-handle');
+  const image = frame.querySelector('.draggable-image__media');
+  if (!handle || !image) return;
+  let resize = null;
+  const finish = event => {
+    if (!resize || (event && event.pointerId !== resize.pointerId)) return;
+    resize = null;
+    handle.releasePointerCapture?.(event.pointerId);
+    frame.style.cursor = 'grab';
+  };
+  handle.addEventListener('pointerdown', event => {
+    event.preventDefault();
+    event.stopPropagation();
+    const ratio = image.naturalWidth && image.naturalHeight
+      ? image.naturalWidth / image.naturalHeight
+      : 4 / 3;
+    resize = { pointerId: event.pointerId, startX: event.clientX, startWidth: frame.offsetWidth, ratio };
+    handle.setPointerCapture(event.pointerId);
+    frame.style.cursor = 'nwse-resize';
+  });
+  handle.addEventListener('pointermove', event => {
+    if (!resize || event.pointerId !== resize.pointerId) return;
+    const width = Math.max(120, Math.min(resize.startWidth + event.clientX - resize.startX, Math.min(window.innerWidth * .9, 760)));
+    frame.style.width = `${width}px`;
+    frame.style.height = `${width / resize.ratio}px`;
+  });
+  handle.addEventListener('pointerup', finish);
+  handle.addEventListener('pointercancel', finish);
+}
+
+document.querySelectorAll('.draggable-image').forEach(image => {
+  const frame = document.createElement('div');
+  frame.className = 'draggable-image';
+  frame.dataset.galleryPosition = image.dataset.galleryPosition || '';
+  frame.setAttribute('role', 'group');
+  frame.tabIndex = 0;
+  frame.setAttribute('aria-label', image.alt || 'Draggable image');
+  image.classList.remove('draggable-image');
+  image.classList.add('draggable-image__media');
+  image.draggable = false;
+  const parent = image.parentNode;
+  parent?.replaceChild(frame, image);
+  const handle = document.createElement('span');
+  handle.className = 'draggable-image__resize-handle';
+  handle.setAttribute('role', 'button');
+  handle.setAttribute('aria-label', 'Resize image');
+  const enlarge = document.createElement('button');
+  enlarge.className = 'draggable-image__enlarge';
+  enlarge.type = 'button';
+  enlarge.setAttribute('aria-label', `Enlarge ${image.alt || 'image'}`);
+  enlarge.textContent = '↗';
+  enlarge.addEventListener('click', event => {
+    event.stopPropagation();
+    openFilmstripModal(image, [image]);
+  });
+  frame.append(image, enlarge, handle);
+  let press = null;
+  frame.addEventListener('pointerdown', event => {
+    if (event.target.closest('.draggable-image__enlarge, .draggable-image__resize-handle')) return;
+    press = { x: event.clientX, y: event.clientY };
+  });
+  frame.addEventListener('pointerup', event => {
+    if (!press) return;
+    const moved = Math.hypot(event.clientX - press.x, event.clientY - press.y) > 6;
+    press = null;
+    if (!moved) openFilmstripModal(image, [image]);
+  });
+  frame.addEventListener('pointercancel', () => { press = null; });
+  frame.addEventListener('keydown', event => {
+    if (event.target !== frame || !['Enter', ' '].includes(event.key)) return;
+    event.preventDefault();
+    openFilmstripModal(image, [image]);
+  });
+  makeDraggableImageResizable(frame);
+  makeDraggable(frame, false);
+});
 
 const filmstripModal = document.querySelector('#filmstrip-modal');
 const filmstripModalContent = filmstripModal?.querySelector('.filmstrip-modal__content');
@@ -10659,7 +10819,6 @@ filmstripModalClose?.addEventListener('click', closeFilmstripModal);
 filmstripModal?.addEventListener('click', event => {
   if (event.target === filmstripModal) closeFilmstripModal();
 });
-filmstripModalContent?.addEventListener('click', event => event.stopPropagation());
 filmstripModal?.addEventListener('cancel', event => {
   event.preventDefault();
   closeFilmstripModal();

@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Sarah Rothberg: Between Meetings — interactive exhibition prototype">
+  <meta name="description" content="Sarah Rothberg: Between Meetings virtual exhibition">
   <title>Sarah Rothberg: Between Meetings</title>
   <link rel="stylesheet" href="styles.css">
   <style>
@@ -26,8 +26,9 @@
 
 <body class="is-loading" aria-busy="true">
   <header class="site-header" aria-label="Primary navigation">
-    <a href="#top">New Media Artspace</a>
+    <a href="https://newmediartspace.info">New Media Artspace</a>
     <a href="curatorial-statement.html">Curatorial Statement</a>
+    <a href="credits.html">Project Credits</a>
   </header>
 
   <main id="top">
@@ -115,7 +116,27 @@
           </p>
         </div>
       </article>
-
+      <section class="filmstrip-carousel forever-meetings-carousel" aria-label="Additional video stills carousel">
+        <button class="carousel-arrow carousel-arrow--prev" type="button"
+          aria-label="Previous additional still">←</button>
+        <div class="filmstrip-viewport">
+          <div class="filmstrip">
+            <img class="filmstrip-image" src="images/stills/FOREVER_MEETINGS_STRANGE_ALIGNMENTS_STILL.jpg"
+              alt="FOREVER MEETINGS still showing two AI avatars seated in a stylized virtual meeting environment with a black-and-white screen.">
+            <img class="filmstrip-image" src="images/stills/forevermeetings_screenshot_art.jpg"
+              alt="FOREVER MEETINGS still of an AI conversation in a minimal gallery-like interface with soft gray and white tones.">
+            <img class="filmstrip-image" src="images/stills/forevermeetings_screenshot_beauty.jpg"
+              alt="FOREVER MEETINGS still with two stylized avatars facing each other in a soft, high-contrast digital space.">
+            <img class="filmstrip-image" src="images/stills/forevermeetings_screenshot_fame.jpg"
+              alt="FOREVER MEETINGS still depicting an AI dialogue with glowing interface elements and a dark monochrome palette.">
+            <img class="filmstrip-image" src="images/stills/Image Sequence_013_0171.jpg"
+              alt="FOREVER MEETINGS still featuring a close-up of the virtual avatars and conversation interface.">
+          </div>
+        </div>
+        <button class="carousel-motion-toggle copy-motion-toggle" type="button" aria-label="Pause additional filmstrip"
+          aria-pressed="false"><span class="copy-motion-icon" aria-hidden="true"></span></button>
+        <button class="carousel-arrow carousel-arrow--next" type="button" aria-label="Next additional still">→</button>
+      </section>
     </section>
 
     <section class="color-stage">
@@ -162,8 +183,17 @@
             EDITION), where two version of the ChatGPT-em bodied avatar meets with itself.</p>
         </div>
       </article>
-      <section class="filmstrip-carousel" aria-label="Video stills carousel">
-        <button class="carousel-arrow carousel-arrow--prev" type="button" aria-label="Previous video still">←</button>
+
+      <section class="draggable-image-gallery draggable-image-gallery--compact" aria-labelledby="draggable-image-gallery-title">
+          <div class="draggable-image-gallery__stage">
+            <img class="draggable-image" data-gallery-position="1" src="images/stills/CPRImage.jpg"
+              alt="Still from the SUPERPROMPT video showing a stylized self-portrait and meeting interface in warm, pale tones.">
+            <img class="draggable-image" data-gallery-position="2" src="images/stills/SUPERPROMPT_still01.jpg"
+              alt="SUPERPROMPT still showing a virtual meeting between the artist and a generated avatar in a softly lit digital room.">
+            <img class="draggable-image" data-gallery-position="3" src="images/stills/SUPERPROMPT_still02.jpg"
+              alt="SUPERPROMPT still depicting a layered, conversational scene with the avatar and interface in cool blue-gray colors.">
+          </div>
+        <!-- <button class="carousel-arrow carousel-arrow--prev" type="button" aria-label="Previous video still">←</button>
         <div class="filmstrip-viewport">
           <div class="filmstrip">
             <img class="filmstrip-image" src="images/stills/CPRImage.jpg" alt="Video stills carousel background">
@@ -177,7 +207,7 @@
           aria-controls="filmstrip-track" aria-pressed="false">
           <span class="copy-motion-icon" aria-hidden="true"></span>
         </button>
-        <button class="carousel-arrow carousel-arrow--next" type="button" aria-label="Next video still">→</button>
+        <button class="carousel-arrow carousel-arrow--next" type="button" aria-label="Next video still">→</button>-->
         <button class="filmstrip-alert" id="filmstrip-alert" type="button" aria-label="Open two related images">
           <span class="filmstrip-alert__dot" aria-hidden="true"></span>
           <span class="filmstrip-alert__count" aria-hidden="true">2</span>
@@ -252,7 +282,7 @@
           <p><a
               href="https://docs.google.com/document/d/1ZLOnVo87Qk1eGL3sEZ7Ev-sXTlE3kJI2Gv7TI9vml2g/edit?usp=sharing"><span
                 style="font-weight: 400;">More info about the project can be found here</a></p>
-          <img src="images/rothberg-email-sig.gif" class="email-sig-gif">
+          <img src="images/rothberg-email-sig.gif" class="email-sig-gif" alt="Animated email signature graphic for Sarah Rothberg.">
         </article>
         <div class="popup-layer" id="popup-layer" aria-live="polite">
           <article class="artifact-popup draggable email-invite-popup" data-kind="email-invite" role="dialog"
@@ -309,7 +339,7 @@
             real-time). </p>
         </div>
       </article>
-      <section class="filmstrip-carousel" aria-label="Additional video stills carousel">
+      <!--<section class="filmstrip-carousel" aria-label="Additional video stills carousel">
         <button class="carousel-arrow carousel-arrow--prev" type="button"
           aria-label="Previous additional still">←</button>
         <div class="filmstrip-viewport">
@@ -344,6 +374,46 @@
         <button class="carousel-motion-toggle copy-motion-toggle" type="button" aria-label="Pause additional filmstrip"
           aria-pressed="false"><span class="copy-motion-icon" aria-hidden="true"></span></button>
         <button class="carousel-arrow carousel-arrow--next" type="button" aria-label="Next additional still">→</button>
+      </section>-->
+      <section class="draggable-image-gallery" aria-labelledby="draggable-image-gallery-title">
+        <div class="draggable-image-gallery__stage">
+          <img class="draggable-image" data-gallery-position="1"
+            src="images/stills/Screen Shot 2021-10-01 at 4.29.00 PM.jpg"
+            alt="NEW MEETINGS video still showing the meeting environment with a virtual avatar and interface in cool blue-gray and warm neutral tones">
+          <img class="draggable-image" data-gallery-position="2"
+            src="images/stills/newmeetings_screenshot_soCloseToTheBigThing.jpg"
+            alt="NEW MEETINGS screenshot of two participants facing each other inside the virtual meeting space in teal, lavender, and muted beige tones">
+          <img class="draggable-image" data-gallery-position="3"
+            src="images/stills/Screen Shot 2022-02-28 at 11.02.40 AM.jpg"
+            alt="Additional NEW MEETINGS still showing a virtual conversation scene in cool blue-gray, dusky purple, and soft cream tones">
+          <img class="draggable-image" data-gallery-position="4"
+            src="images/stills/Screen Shot 2022-02-28 at 11.03.42 AM.jpg"
+            alt="Additional NEW MEETINGS still showing the meeting room and floating interface elements in teal, pale gray, and warm neutral colors">
+          <img class="draggable-image" data-gallery-position="5"
+            src="images/stills/Screen Shot 2022-02-28 at 11.04.35 AM.jpg"
+            alt="Additional NEW MEETINGS still of the virtual meeting platform in use with blue-gray, lavender, and beige tones">
+          <img class="draggable-image" data-gallery-position="6"
+            src="images/stills/Screen Shot 2022-02-28 at 11.07.40 AM.jpg"
+            alt="Additional NEW MEETINGS still showing the virtual conversation progressing in cool teal, muted purple, and light neutral shades">
+          <img class="draggable-image" data-gallery-position="7"
+            src="images/stills/Screen Shot 2022-02-28 at 11.09.02 AM.jpg"
+            alt="Additional NEW MEETINGS still showing the participants in a shared VR environment with blue-gray, soft lavender, and cream tones">
+          <img class="draggable-image" data-gallery-position="8"
+            src="images/stills/Screen Shot 2022-02-28 at 11.10.30 AM.jpg"
+            alt="Additional NEW MEETINGS still of the meeting platform with animated graphics in teal, gray, and warm beige hues">
+          <img class="draggable-image" data-gallery-position="9"
+            src="images/stills/Screen Shot 2022-02-28 at 11.14.49 AM.jpg"
+            alt="Additional NEW MEETINGS still showing a close interaction between speakers in virtual space with cool blue-gray, muted plum, and pale neutral tones">
+          <img class="draggable-image" data-gallery-position="10"
+            src="images/stills/Screen Shot 2022-02-28 at 11.16.16 AM.jpg"
+            alt="Additional NEW MEETINGS still showing the rising meeting structure and interface in teal, lavender, and warm off-white tones">
+          <img class="draggable-image" data-gallery-position="11"
+            src="images/stills/Screen Shot 2022-02-28 at 11.20.35 AM.jpg"
+            alt="Additional NEW MEETINGS still showing the conversation reaching a higher virtual level in cool blue-gray, muted purple, and beige tones">
+          <img class="draggable-image" data-gallery-position="12"
+            src="images/stills/Screen Shot 2022-02-28 at 11.27.34 AM.jpg"
+            alt="Additional NEW MEETINGS still showing the final collaborative meeting moment in blue-gray, soft lavender, and warm neutral colors">
+        </div>
       </section>
       <article class="video-5 video-container">
         <div class="media-block final-media" id="final-video">
@@ -372,75 +442,7 @@
         </div>
       </article>
     </section>
-    <section class="credits">
-      <div class="credits-container">
-        <h2>CREDITS</h2>
-        <h3><em>For (original) NEW MEETINGS</em></h3>
-        <p>Key collaborator/Networking Engineer: Nate Turley</p>
-        <p>Production Assistant: Savannah Phillips-Falk</p>
-        <p>Participants: GL Genco, Molly Soda, Rogue Fong, Austin Robey, Andrew Demirjian, Johann Diedrick, David Byrne,
-          David Lobser, Andrew Rosenbaum, Noya Kohavi, Alexa Schonhaut, Helen Shaw, Loren Hammonds, Michelle Shofet,
-          Bobby
-          Wooten, Chike Ohayia, Travis Korte, Kinlaw, Yeseul Song, Luisa Pereira, Mark Russel, Claire Hentschker,
-          Christopher Clary, Karen Wong, Kelsa Trom, Savannah Phillips-Falk</p>
-        <p>Production Support: Onassis ONX</p>
-        <h3><em>For THREE MEETINGS</em></h3>
-        <p>AI Developer: Aaron Meyers</p>
-        <p>Additional Software Development: Yuan Peng</p>
-        <p>Soundscape: Nailah Hunter</p>
-        <p>Participant: Yvonne Mpwo&nbsp;</p>
-        <p>Production Support: bitforms, the Jerome Foundation, Onassis ONX</p>
-        <h3><em>For NEW MEETINGS (SUPERPROMPT EDITION) with Nina Sobell</em></h3>
-        <p>AI Developer: Aaron Meyers</p>
-        <p>Additional Software Development: Yuan Peng</p>
-        <p>Producer and additional editing: Savannah Phillips-Falk</p>
-        <p>Soundscape: Nailah Hunter</p>
-        <p>Participant: Nina Sobell</p>
-        <p>Production Support: bitforms, the Jerome Foundation, Onassis ONX</p>
-        <h3><em>FOR FOREVER MEETINGS</em></h3>
-        <p>AI System Engineer: Yotam Mann</p>
-        <p>Unity Development + Generative Animation System: Marpi</p>
-        <p>Original Soundscape: Nailah Hunter</p>
-        <p>Production Assistant: Han Zhang</p>
-        <p>Production Support: bitforms, the Jerome Hill Foundation, Onassis ONX</p>
-        <br />
-        <h2>SOFTWARE AND LIBRARIES USED:</h2>
-        <h3><em>Works from the NEW MEETINGS original series</em></h3>
-        <p>Adobe Medium: Avatar Creation</p>
-        <p>Unity3d: Game Engine</p>
-        <p>FinalIK, Motion Capture/Animation system for VR: P&auml;rtel Lang</p>
-        <p>Open-Source Unity Effects: Keijiro Takahashi</p>
-        <p>NormalVR: Networking</p>
-        <p>VoiceMod: Voice Effects</p>
-        <p>OBS: Broadcast/Capture Software</p>
-        <br />
-        <h3><em>Works from the SUPERPROMPT series</em></h3>
-        <p>Adobe Medium: Avatar Creation</p>
-        <p>OpenAI's GPT4: Language Model</p>
-        <p>LangChain: Wrapper for GPT4</p>
-        <p>Unity3d: Game Engine</p>
-        <p>FinalIK, Motion Capture/Animation system for VR: P&auml;rtel Lang</p>
-        <p>Open-Source Unity Effects: Keijiro Takahashi</p>
-        <p>Microsoft Azure: Speech to Text, Text to Speech</p>
-        <p>NormalVR: Networking</p>
-        <p>VoiceMod: Voice Effects</p>
-        <p>OBS: Broadcast/Capture Software</p>
-        <h3><em>Works from FOREVER MEETINGS series</em></h3>
-        <p>Adobe Medium: Avatar Creation</p>
-        <p>OBS: Broadcast/Capture Software</p>
-        <p>Ollama + Llama 3.2 (LLM)</p>
-        <p>NodeJS</p>
-        <p>Unity3d</p>
-        <p>Coqui AI (TTS)</p>
-      </div>
-    </section>
   </main>
-
-  <!--<footer class="site-footer">
-    <a href="#top">New Media Artspace</a>
-    <a class="exhibition-title" href="#top"><strong>Sarah Rothberg:</strong><span>Between Meetings</span></a>
-    <a href="#about">About the Exhibition</a>
-  </footer>-->
   <div class="global-drag-layer" id="global-drag-layer"></div>
   <script src="script.js"></script>
 </body>
