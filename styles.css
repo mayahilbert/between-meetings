@@ -539,7 +539,7 @@ hr {
 
 .play:hover::after,
 .play:focus-visible::after {
-  border-left: 27px solid #fff;
+  border-left: var(--play-triangle-width) solid #fff;
 }
 
 .color-stage .play:hover,
@@ -548,14 +548,12 @@ hr {
 }
 
 .color-stage .play::after {
-  border-left: 27px solid #2a42cc;
-  border-top: 17px solid transparent;
-  border-bottom: 17px solid transparent;
+  border-left: var(--play-triangle-width) solid #2a42cc;
 }
 
 .color-stage .play:hover::after,
 .color-stage .play:focus-visible::after {
-  border-left: 27px solid #fff;
+  border-left: var(--play-triangle-width) solid #fff;
 }
 
 .caption {
@@ -2155,7 +2153,7 @@ h3.email-heading {
     height: 62px;
     --play-triangle-width: 19px;
     --play-triangle-half-height: 12px;
-    --play-triangle-optical-offset: 9px;
+    --play-triangle-optical-offset: 6px;
   }
 
   .play::after {
