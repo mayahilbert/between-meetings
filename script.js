@@ -10087,8 +10087,6 @@ function preloadVimeoFrames() {
 }
 
 const workspace = document.querySelector('.document-workspace');
-const popupLayer = document.querySelector('#popup-layer');
-const filmstripPopupLayer = document.querySelector('#filmstrip-popup-layer');
 const filmstripAlert = document.querySelector('#filmstrip-alert');
 const filmstripAlertCount = filmstripAlert?.querySelector('.filmstrip-alert__count');
 const filmstripPopupKinds = ['filmstripImageOne', 'filmstripImageTwo'];
@@ -10136,8 +10134,6 @@ function promoteToGlobal(element) {
 function bringToFront(element) {
   const zIndex = String(++topZIndex);
   element.style.zIndex = zIndex;
-  const layer = element.closest('.filmstrip-popup-layer');
-  if (layer) layer.style.zIndex = zIndex;
 }
 
 function addTrailSheet(left, top) {
@@ -10275,7 +10271,6 @@ fluxus: `<div class="padded-content fluxus"><h1>Selected Fluxus Event Scores</h1
 <p>Write a word or words on the enclosed card and place it somewhere. Please tell me the word and the place, which will be edited on the world map.</p></div>`,
 onx: { type: 'image', src: 'images/ONX_HD.webp', alt: 'ONX Showcase 2021 Flyer.'},
   form: { type: 'image', src: 'images/participant-form.png', alt: 'Screenshot of a Google form with a purple background.'},
-  notes: '<div class="padded-content"><h3>Production Notes</h3><p>Meeting length: variable<br>Location: browser window<br>Materials: voice, cursor, invitation, delay.</p><p>This panel is reserved for the real working notes.</p></div>',
   bohm: { type: 'image', src: 'images/wiki-bohm.png', alt: 'Screenshot of a Bohm Dialogue page on Wikipedia.'},
   notes: '<div class="padded-content"><h3>Production Notes</h3><p>Meeting length: variable<br>Location: browser window<br>Materials: voice, cursor, invitation, delay.</p><p>This panel is reserved for the real working notes.</p></div>',
   filmstripImageOne: { type: 'image', src: 'images/chatGPTMadeUpArtworks.png', alt: 'Screenshot of a conversation between Sarah Rothberg and ChatGPT where ChatGPT lists works by Rothberg, including one titled Sophie.', caption: 'chatGPTMadeUpArtworks.png' },
@@ -10293,21 +10288,6 @@ function popupMarkup(content) {
   return `<figure class="artifact-popup__figure"><img draggable="false" src="${content.src}" alt="${alt}">${caption}</figure>`;
 }
 
-function keepPopupInWorkspace(popup) {
-  const filmstripBounds = popup.closest('.filmstrip-carousel');
-  const boundsElement = filmstripBounds || workspace;
-  const maxLeft = filmstripBounds
-    ? Math.max(8, boundsElement.clientWidth - 56)
-    : Math.max(8, boundsElement.clientWidth - popup.offsetWidth - 8);
-  const maxTop = filmstripBounds
-    ? Math.max(8, boundsElement.clientHeight - 56)
-    : Math.max(8, boundsElement.clientHeight - popup.offsetHeight - 8);
-  const left = Math.max(8, Math.min(parseFloat(popup.style.left) || 0, maxLeft));
-  const top = Math.max(8, Math.min(parseFloat(popup.style.top) || 0, maxTop));
-  popup.style.left = `${left}px`;
-  popup.style.top = `${top}px`;
-}
-
 function updateFilmstripAlert() {
   if (!filmstripAlertCount) return;
   const remaining = Math.max(0, filmstripPopupKinds.length - filmstripRevealCount);
@@ -10323,45 +10303,6 @@ function resetFilmstripRevealsIfClosed() {
     filmstripRevealCount = 0;
     updateFilmstripAlert();
   }
-}
-
-function makeFilmstripPopupDraggable(popup) {
-  let drag = null;
-  const finish = event => {
-    if (!drag || (event && event.pointerId !== drag.pointerId)) return;
-    drag = null;
-    popup.releasePointerCapture?.(event.pointerId);
-    popup.style.cursor = 'grab';
-  };
-
-  popup.addEventListener('pointerdown', event => {
-    bringToFront(popup);
-    if (event.target.closest('button, input, textarea, a')) return;
-    const rect = popup.getBoundingClientRect();
-    if (event.clientX >= rect.right - 24 && event.clientY >= rect.bottom - 24) return;
-    event.preventDefault();
-    promoteToGlobal(popup);
-    drag = {
-      pointerId: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      startScrollX: window.scrollX,
-      startScrollY: window.scrollY,
-      left: parseFloat(popup.style.left) || popup.offsetLeft,
-      top: parseFloat(popup.style.top) || popup.offsetTop
-    };
-    popup.setPointerCapture(event.pointerId);
-    popup.style.cursor = 'grabbing';
-  });
-
-  popup.addEventListener('pointermove', event => {
-    if (!drag || event.pointerId !== drag.pointerId) return;
-    popup.style.left = `${drag.left + (event.clientX + window.scrollX) - (drag.startX + drag.startScrollX)}px`;
-    popup.style.top = `${drag.top + (event.clientY + window.scrollY) - (drag.startY + drag.startScrollY)}px`;
-  });
-
-  popup.addEventListener('pointerup', finish);
-  popup.addEventListener('pointercancel', finish);
 }
 
 function makePopupResizable(popup) {
@@ -10469,7 +10410,6 @@ function createArtifactPopup(kind, opener = null, shouldFocus = true) {
   popup.innerHTML = `<button class="popup-close" aria-label="Close document">×</button><div class="artifact-popup__scroll">${popupMarkup(content)}</div><span class="popup-resize-handle" aria-hidden="true"></span>`;
   globalDragLayer?.appendChild(popup);
   bringToFront(popup);
-  if (isFilmstripPopup) popup.addEventListener('pointerdown', event => event.stopPropagation());
   fitArtifactPopupHeight(popup);
   placePopupInSection(popup, opener, localLeft, localTop);
   popup.querySelectorAll('img').forEach(image => {
@@ -10477,8 +10417,7 @@ function createArtifactPopup(kind, opener = null, shouldFocus = true) {
   });
   requestAnimationFrame(() => fitArtifactPopupHeight(popup));
   makePopupResizable(popup);
-  if (isFilmstripPopup) makeFilmstripPopupDraggable(popup);
-  else makeDraggable(popup, false);
+  makeDraggable(popup, false);
   const close = popup.querySelector('.popup-close');
   const removePopup = () => {
     popup.remove();
@@ -10521,12 +10460,10 @@ updateFilmstripAlert();
 
 window.addEventListener('resize', () => {
   syncTrailHeights();
-  popupLayer.querySelectorAll('.artifact-popup').forEach(keepPopupInWorkspace);
-  filmstripPopupLayer?.querySelectorAll('.artifact-popup').forEach(keepPopupInWorkspace);
 });
 
 function makeDraggable(element, leavesTrail) {
-  const boundsElement = element.closest('.filmstrip-carousel') || element.closest('.text-window-stage') || workspace;
+  const boundsElement = element.closest('.text-window-stage') || workspace;
   let active = false;
   let offsetX = 0;
   let offsetY = 0;
@@ -10589,13 +10526,8 @@ function makeDraggable(element, leavesTrail) {
       return;
     }
     const bounds = boundsElement.getBoundingClientRect();
-    const filmstripBounds = element.closest('.filmstrip-carousel');
-    const maxX = filmstripBounds
-      ? Math.max(8, boundsElement.clientWidth - 56)
-      : boundsElement.clientWidth - element.offsetWidth;
-    const maxY = filmstripBounds
-      ? Math.max(8, boundsElement.clientHeight - 56)
-      : boundsElement.clientHeight - element.offsetHeight;
+    const maxX = boundsElement.clientWidth - element.offsetWidth;
+    const maxY = boundsElement.clientHeight - element.offsetHeight;
     const x = Math.max(0, Math.min(event.clientX - bounds.left - offsetX, maxX));
     const y = Math.max(0, Math.min(event.clientY - bounds.top - offsetY, maxY));
     if (leavesTrail && performance.now() - lastTrail > 85) {
@@ -10677,19 +10609,10 @@ document.querySelectorAll('.draggable-image').forEach(image => {
   handle.className = 'draggable-image__resize-handle';
   handle.setAttribute('role', 'button');
   handle.setAttribute('aria-label', 'Resize image');
-  const enlarge = document.createElement('button');
-  enlarge.className = 'draggable-image__enlarge';
-  enlarge.type = 'button';
-  enlarge.setAttribute('aria-label', `Enlarge ${image.alt || 'image'}`);
-  enlarge.textContent = '↗';
-  enlarge.addEventListener('click', event => {
-    event.stopPropagation();
-    openFilmstripModal(image, [image]);
-  });
-  frame.append(image, enlarge, handle);
+  frame.append(image, handle);
   let press = null;
   frame.addEventListener('pointerdown', event => {
-    if (event.target.closest('.draggable-image__enlarge, .draggable-image__resize-handle')) return;
+    if (event.target.closest('.draggable-image__resize-handle')) return;
     press = { x: event.clientX, y: event.clientY };
   });
   frame.addEventListener('pointerup', event => {

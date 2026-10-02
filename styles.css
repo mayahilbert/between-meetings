@@ -644,15 +644,6 @@ hr {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/*@keyframes copyScroll {
-  from {
-    transform: translate3d(0, 0, 0);
-  }
-
-  to {
-    transform: translate3d(0, var(--copy-loop-distance), 0);
-  }
-}*/
 @keyframes copyScroll {
   from {
     transform: translate3d(0, 0, 0);
@@ -1092,32 +1083,6 @@ hr {
   bottom: 3rem;
 }
 
-.filmstrip-popup-layer {
-  position: absolute;
-  z-index: 8;
-  inset: 0;
-  pointer-events: none;
-}
-
-.filmstrip-popup-layer .artifact-popup {
-  pointer-events: auto;
-  touch-action: none;
-  -webkit-user-select: none;
-  /* Safari */
-  -moz-user-select: none;
-  /* Firefox */
-  -ms-user-select: none;
-  /* IE10+/Edge */
-  user-select: none;
-  -webkit-user-drag: none;
-  user-drag: none;
-  cursor: grab;
-}
-
-.filmstrip-popup-layer .artifact-popup:active {
-  cursor: grabbing;
-}
-
 .filmstrip-carousel .carousel-motion-toggle {
   top: 0;
 }
@@ -1174,35 +1139,6 @@ hr {
   height: 24px;
   cursor: nwse-resize;
   touch-action: none;
-}
-
-.draggable-image__enlarge {
-  position: absolute;
-  z-index: 3;
-  top: 6px;
-  right: 6px;
-  width: 28px;
-  height: 28px;
-  display: grid;
-  place-items: center;
-  padding: 0;
-  border: 1px solid var(--green);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--green);
-  font: 1rem/1 sans-serif;
-  cursor: pointer;
-}
-
-.draggable-image__enlarge:hover,
-.draggable-image__enlarge:focus-visible {
-  background: var(--green);
-  color: #000;
-}
-
-.draggable-image__enlarge:focus-visible {
-  outline: 2px solid var(--green);
-  outline-offset: 2px;
 }
 
 .draggable-image__resize-handle::after {
@@ -1600,6 +1536,7 @@ h3.email-heading {
   background: #f6f6f8;
   color: black;
   padding: 0.2rem;
+  padding-top: 1.4em;
   text-align: right;
   font-size: 0.7rem;
 }
