@@ -2155,7 +2155,7 @@ h3.email-heading {
     height: 62px;
     --play-triangle-width: 19px;
     --play-triangle-half-height: 12px;
-    --play-triangle-optical-offset: 6px;
+    --play-triangle-optical-offset: 9px;
   }
 
   .play::after {

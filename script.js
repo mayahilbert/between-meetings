@@ -10388,12 +10388,22 @@ function placePopupInSection(popup, opener, localLeft, localTop) {
   const isMainDocumentPopup = popup.dataset.filmstripPopup !== 'true';
   const rightEdge = window.scrollX + document.documentElement.clientWidth;
   const isFilmstripPopup = !isMainDocumentPopup;
-  const left = isMainDocumentPopup
-    ? Math.max(8, rightEdge - popup.offsetWidth - 24)
-    : window.scrollX + Math.max(8, (document.documentElement.clientWidth - popup.offsetWidth) / 2);
-  const top = isFilmstripPopup
-    ? window.scrollY + Math.max(8, (window.innerHeight - popup.offsetHeight) / 2)
-    : (sectionRect?.top || 0) + window.scrollY + localTop;
+  const isMobile = window.matchMedia('(max-width: 42rem)').matches;
+  let left;
+  let top;
+  if (isFilmstripPopup) {
+    left = window.scrollX + Math.max(8, (document.documentElement.clientWidth - popup.offsetWidth) / 2);
+    top = window.scrollY + Math.max(8, (window.innerHeight - popup.offsetHeight) / 2);
+  } else if (isMobile) {
+    const cascade = (popupCount % 5) - 2;
+    const viewportLeft = (document.documentElement.clientWidth - popup.offsetWidth) / 2;
+    const viewportTop = (window.innerHeight - popup.offsetHeight) / 2;
+    left = window.scrollX + Math.max(8, Math.min(document.documentElement.clientWidth - popup.offsetWidth - 8, viewportLeft + cascade * 18));
+    top = window.scrollY + Math.max(8, viewportTop + cascade * 16);
+  } else {
+    left = Math.max(8, rightEdge - popup.offsetWidth - 24);
+    top = (sectionRect?.top || 0) + window.scrollY + localTop;
+  }
   popup.style.position = 'absolute';
   popup.style.left = `${left}px`;
   popup.style.top = `${top}px`;
