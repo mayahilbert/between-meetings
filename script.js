@@ -10348,7 +10348,7 @@ function makePopupResizable(popup) {
 
   handle.addEventListener('pointermove', event => {
     if (!resize || event.pointerId !== resize.pointerId) return;
-    const width = Math.max(280, Math.min(resize.width + event.clientX - resize.startX, Math.min(window.innerWidth * .9, 760)));
+    const width = Math.max(280, Math.min(resize.width + event.clientX - resize.startX, Math.min(window.innerWidth * .9, 1280)));
     const height = Math.max(180, Math.min(resize.height + event.clientY - resize.startY, Math.min(window.innerHeight * .8, 720)));
     popup.style.width = `${width}px`;
     popup.style.height = `${height}px`;
@@ -10802,7 +10802,7 @@ const updateLoopingNext = () => {
   }
   if (documentNext && documentSection) {
     const sectionRect = documentSection.getBoundingClientRect();
-    documentNext.classList.toggle('is-fixed', sectionRect.top < window.innerHeight && sectionRect.bottom > window.innerHeight);
+    documentNext.classList.toggle('is-fixed', sectionRect.top + 200 < window.innerHeight && sectionRect.bottom - 100 > window.innerHeight);
   }
 };
 const scheduleLoopingNextUpdate = () => {
@@ -10827,3 +10827,97 @@ Promise.race([
 ]).then(() => {
   window.requestAnimationFrame(() => window.requestAnimationFrame(revealPage));
 });
+
+
+// Playlist
+
+  // id = the part after "v=" in a video URL
+  const VIDEOS = [{ id: "WSgAvnr80iA" },
+{ id: "ZR5bs8Lldcs" },
+{ id: "mgbkfJDgH_E" },
+{ id: "BWcEBmOoPRU" },
+{ id: "ZdYUKxO0AEs" },
+{ id: "a-_2TGFwgkI" },
+{ id: "dsKCwHsXPGk" },
+{ id: "Hw-JeaSWwz4" },
+{ id: "V4MHgwXBUZ0" },
+{ id: "mn2ldI_TTes" },
+{ id: "0Y6I-qrXsZA" },
+{ id: "_Ns0iJYRriE" },
+{ id: "b6dNVtRtzj4" },
+{ id: "Mgc9llcrhuA" },
+{ id: "-h4apAcZqOY" },
+{ id: "6-OogMesPq4" },
+{ id: "AIzx2u-NW-0" },
+{ id: "Zqk07KAEb6A" },
+{ id: "0y8la9Y-yus" },
+{ id: "4sKg2zeFEdg" },
+{ id: "TfSdSgcpc58" },
+{ id: "AyJArTQHowU" },
+{ id: "LbWTLD0_JJQ" },
+{ id: "ClV9n-MPopY" },
+  ];
+  // ============================
+
+  let player, current = 0;
+  const listEl = document.getElementById("list");
+  const titleEl = document.getElementById("now-playing");
+
+  function renderList() {
+    listEl.innerHTML = "";
+    VIDEOS.forEach((v, i) => {
+      const el = document.createElement("div");
+      el.className = "item";
+      el.dataset.index = i;
+      el.innerHTML = '<img alt="" src="https://i.ytimg.com/vi/' + v.id + '/mqdefault.jpg"><span></span>';
+      el.querySelector("span").textContent = v.title || "Loading…";
+      el.addEventListener("click", () => play(i));
+      listEl.appendChild(el);
+    });
+  }
+
+  async function loadTitles() {
+    await Promise.all(VIDEOS.map(async (v, i) => {
+      if (v.title) return;
+      try {
+        const url = "https://www.youtube.com/watch?v=" + v.id;
+        const res = await fetch("https://www.youtube.com/oembed?format=json&url=" + encodeURIComponent(url));
+        v.title = res.ok ? (await res.json()).title : "Video " + (i + 1);
+      } catch (e) {
+        v.title = "Video " + (i + 1);
+      }
+      listEl.children[i].querySelector("span").textContent = v.title;
+      if (i === current) titleEl.textContent = v.title;
+    }));
+  }
+
+  function play(i) {
+    current = i;
+    player.loadVideoById(VIDEOS[i].id);
+    titleEl.textContent = VIDEOS[i].title || "";
+    [...listEl.children].forEach((el, n) => el.classList.toggle("active", n === i));
+    listEl.children[i].scrollIntoView({ block: "nearest" });
+  }
+
+  function onYouTubeIframeAPIReady() {
+    renderList();
+    player = new YT.Player("player", {
+      width: "100%", height: "100%",
+      videoId: VIDEOS[0].id,
+      playerVars: { rel: 0 },
+      events: {
+        onReady: () => { listEl.children[0].classList.add("active"); loadTitles(); },
+        onStateChange: (e) => {
+          if (e.data === YT.PlayerState.ENDED && current < VIDEOS.length - 1) play(current + 1);
+        },
+        onError: () => {
+          listEl.children[current].classList.add("broken");
+          if (current < VIDEOS.length - 1) play(current + 1);
+        }
+      }
+    });
+  }
+
+  const tag = document.createElement("script");
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);

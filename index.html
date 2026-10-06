@@ -24,7 +24,8 @@
 </head>
 
 <body class="is-loading" aria-busy="true">
-  <div class="loading-screen" role="status" aria-live="polite">Please wait <span class="loading-screen__dots" aria-hidden="true"></span></div>
+  <div class="loading-screen" role="status" aria-live="polite">Please wait <span class="loading-screen__dots"
+      aria-hidden="true"></span></div>
   <header class="site-header" aria-label="Primary navigation">
     <a href="https://newmediartspace.info">New Media Artspace</a>
     <a href="curatorial-statement.html">Curatorial Statement</a>
@@ -126,7 +127,8 @@
           aria-label="Previous additional still">←</button>
         <div class="filmstrip-viewport">
           <div class="filmstrip">
-            <img loading="lazy" class="filmstrip-image" src="images/stills/FOREVER_MEETINGS_STRANGE_ALIGNMENTS_STILL.jpg"
+            <img loading="lazy" class="filmstrip-image"
+              src="images/stills/FOREVER_MEETINGS_STRANGE_ALIGNMENTS_STILL.jpg"
               alt="FOREVER MEETINGS still showing two AI avatars seated in a stylized virtual meeting environment with a black-and-white screen.">
             <img loading="lazy" class="filmstrip-image" src="images/stills/forevermeetings_screenshot_art.jpg"
               alt="FOREVER MEETINGS still of an AI conversation in a minimal gallery-like interface with soft gray and white tones.">
@@ -185,19 +187,22 @@
           <p>A compilation of the three types of meeting represented in the SUPERPROMPT body of work: a NEW MEETING
             between the artist and a human guest (in this case, curator Yvonne Mpwo), a NEW NEW MEETING between the
             artist, and the avatar embodied by ChatGPT with a unique system prompt, and a FOREVER MEETING (SUPERPROMPT
-            EDITION), where two version of the ChatGPT-em bodied avatar meets with itself.</p>
+            EDITION), where two versions of the ChatGPT-embodied avatar meet with itself.</p>
         </div>
       </article>
 
-      <section class="draggable-image-gallery draggable-image-gallery--compact" aria-labelledby="draggable-image-gallery-title">
-          <div class="draggable-image-gallery__stage">
-            <img loading="lazy" class="draggable-image" data-gallery-position="1" src="images/stills/CPRImage.jpg"
-              alt="Still from the SUPERPROMPT video showing a stylized self-portrait and meeting interface in warm, pale tones.">
-            <img loading="lazy" class="draggable-image" data-gallery-position="2" src="images/stills/SUPERPROMPT_still01.jpg"
-              alt="SUPERPROMPT still showing a virtual meeting between the artist and a generated avatar in a softly lit digital room.">
-            <img loading="lazy" class="draggable-image" data-gallery-position="3" src="images/stills/SUPERPROMPT_still02.jpg"
-              alt="SUPERPROMPT still depicting a layered, conversational scene with the avatar and interface in cool blue-gray colors.">
-          </div>
+      <section class="draggable-image-gallery draggable-image-gallery--compact"
+        aria-labelledby="draggable-image-gallery-title">
+        <div class="draggable-image-gallery__stage">
+          <img loading="lazy" class="draggable-image" data-gallery-position="1" src="images/stills/CPRImage.jpg"
+            alt="Still from the SUPERPROMPT video showing a stylized self-portrait and meeting interface in warm, pale tones.">
+          <img loading="lazy" class="draggable-image" data-gallery-position="2"
+            src="images/stills/SUPERPROMPT_still01.jpg"
+            alt="SUPERPROMPT still showing a virtual meeting between the artist and a generated avatar in a softly lit digital room.">
+          <img loading="lazy" class="draggable-image" data-gallery-position="3"
+            src="images/stills/SUPERPROMPT_still02.jpg"
+            alt="SUPERPROMPT still depicting a layered, conversational scene with the avatar and interface in cool blue-gray colors.">
+        </div>
         <!-- <button class="carousel-arrow carousel-arrow--prev" type="button" aria-label="Previous video still">←</button>
         <div class="filmstrip-viewport">
           <div class="filmstrip">
@@ -283,10 +288,10 @@
               Feel free to share with others who </strong><strong>might want to participate!&nbsp;</strong></p>
           <p>🖤<strong>Sarah (Rothberg, in case someone sent this to
               you)</strong></p>
-          <p><a
-              href="#" class="artifact-link" data-artifact="info"><span
-                style="font-weight: 400;">More info about the project can be found here</a></p>
-          <img loading="lazy" src="images/rothberg-email-sig.gif" class="email-sig-gif" alt="Animated email signature graphic for Sarah Rothberg.">
+          <p><a href="#" class="artifact-link" data-artifact="info"><span style="font-weight: 400;">More info about the
+                project can be found here</a></p>
+          <img loading="lazy" src="images/rothberg-email-sig.gif" class="email-sig-gif"
+            alt="Animated email signature graphic for Sarah Rothberg.">
         </article>
         <div class="popup-layer" id="popup-layer" aria-live="polite">
           <article class="artifact-popup draggable email-invite-popup" data-kind="email-invite" role="dialog"
@@ -329,8 +334,27 @@
           <span class="looping-copy__next-chevron" aria-hidden="true"></span>
         </a>
       </section>
+
       <article class="video-6 video-container">
-        <div class="media-block media-six" id="media-6">
+        <div class="playlist-block" id="media-6">
+          <div class="widget">
+            <div class="main-playlist">
+              <div class="player-box">
+                <div id="player"></div>
+              </div>
+              <div class="caption caption-five">
+                <p>NEW MEETINGS PLAYLIST 🔵 NOW PLAYING</p>
+                <h2 id="now-playing"></h2>
+                <p class="work-info">2021, video produced with custom software and VR headsets</p>
+                <p>A meeting between Sarah and a guest, unedited (as originally livestreamed / projected into the gallery
+                  space in
+                  real-time). </p>
+              </div>
+            </div>
+            <div class="list" id="list"></div>
+          </div>
+        </div>
+        <!--<div class="media-block media-six" id="media-6">
           <div class="video-frame" data-vimeo="1231163604" data-poster=""
             data-poster-label="IMAGE: Just the Agreements video">
             <div class="video-poster final-image"></div>
@@ -339,13 +363,8 @@
               loading="lazy" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>
             <button class="play" aria-label="Play Just the Agreements video"></button>
           </div>
-        </div>
-        <div class="caption caption-five">
-          <h2>NEW MEETINGS with X</h2>
-          <p class="work-info">2021, video produced with custom software and VR headsets</p>
-          <p>A meeting between Sarah and X, unedited (as originally livestreamed / projected into the gallery space in
-            real-time). </p>
-        </div>
+        </div>-->
+
       </article>
       <!--<section class="filmstrip-carousel" aria-label="Additional video stills carousel">
         <button class="carousel-arrow carousel-arrow--prev" type="button"
@@ -383,7 +402,8 @@
           aria-pressed="false"><span class="copy-motion-icon" aria-hidden="true"></span></button>
         <button class="carousel-arrow carousel-arrow--next" type="button" aria-label="Next additional still">→</button>
       </section>-->
-      <section class="draggable-image-gallery" id="draggable-image-gallery" aria-labelledby="draggable-image-gallery-title">
+      <section class="draggable-image-gallery" id="draggable-image-gallery"
+        aria-labelledby="draggable-image-gallery-title">
         <div class="draggable-image-gallery__stage">
           <img loading="lazy" class="draggable-image" data-gallery-position="1"
             src="images/stills/Screen Shot 2021-10-01 at 4.29.00 PM.jpg"
