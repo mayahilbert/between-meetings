@@ -10786,6 +10786,7 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     if (!target) return;
     event.preventDefault();
     target.scrollIntoView({ behavior: 'smooth' });
+    if (anchor.classList.contains('skip-link')) target.focus({ preventScroll: true });
   });
 });
 
