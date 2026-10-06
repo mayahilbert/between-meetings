@@ -2183,8 +2183,14 @@ h3.email-heading {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *,
+  *::before,
+  *::after {
     scroll-behavior: auto !important;
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    transition-delay: 0ms !important;
   }
 
   .looping-copy__track {
@@ -2194,6 +2200,13 @@ h3.email-heading {
   .scroll-indicator__chevron {
     animation: none;
   }
+}
+
+/* Shared keyboard focus treatment. :focus-visible keeps the ring off
+   ordinary pointer clicks while preserving a clear indicator for keyboard users. */
+:where(a, button, [role="button"], [tabindex]):focus-visible {
+  outline: 2px solid var(--green) !important;
+  outline-offset: 3px !important;
 }
 
 /* YT playlist */

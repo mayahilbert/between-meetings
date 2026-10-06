@@ -9994,7 +9994,9 @@ function pauseVimeo(iframe) {
 }
 
 document.querySelector('.video-close').addEventListener('click', () => {
-  pauseVimeo(vimeoCard.querySelector('iframe'));
+  const invitationIframe = vimeoCard.querySelector('iframe');
+  pauseVimeo(invitationIframe);
+  if (invitationIframe) invitationIframe.tabIndex = -1;
   vimeoCardContainer.hidden = true;
   envelope.hidden = false;
   envelope.classList.remove('is-open');
@@ -10004,6 +10006,7 @@ document.querySelector('.video-close').addEventListener('click', () => {
 
 function playVimeo(iframe, onReady) {
   const start = () => {
+    iframe.tabIndex = 0;
     iframe.dataset.loading = 'false';
     iframe.dataset.ready = 'true';
     iframe.dataset.playRequested = 'false';
@@ -10029,6 +10032,7 @@ function playVimeo(iframe, onReady) {
 const videoFrames = document.querySelectorAll('.video-frame');
 videoFrames.forEach(frame => {
   const iframe = frame.querySelector('iframe');
+  if (iframe) iframe.tabIndex = -1;
   const poster = frame.querySelector('.video-poster');
   const posterImage = poster.querySelector('img');
   const posterUrl = frame.dataset.poster || poster.dataset.src || posterImage?.getAttribute('src');
@@ -10428,6 +10432,7 @@ function createArtifactPopup(kind, opener = null, shouldFocus = true) {
   popup.dataset.filmstripPopup = String(isFilmstripPopup);
   popup.setAttribute('role', 'dialog');
   popup.setAttribute('aria-modal', 'false');
+  popup.tabIndex = -1;
   popup.setAttribute('aria-label', content?.alt || 'Exhibition document');
   const localLeft = isFilmstripPopup ? 24 + ((popupCount * 38) % 120) : 40 + ((popupCount * 83) % 210);
   const localTop = isFilmstripPopup ? 18 + ((popupCount * 27) % 60) : 35 + ((popupCount * 127) % 410);
@@ -10584,6 +10589,11 @@ if (emailInvite) {
 emailInvite?.querySelector('.popup-close')?.addEventListener('click', () => {
   emailInvite.hidden = true;
 });
+emailInvite?.addEventListener('keydown', event => {
+  if (event.key !== 'Escape') return;
+  event.preventDefault();
+  emailInvite.hidden = true;
+});
 
 const browserWindow = document.querySelector('.browser-window');
 if (browserWindow) makeDraggable(browserWindow, false);
@@ -10698,14 +10708,14 @@ function initFilmstripCarousel(carousel) {
     slide.draggable = false;
     slide.setAttribute('role', 'button');
     slide.setAttribute('tabindex', '0');
-    slide.setAttribute('aria-label', `Open filmstrip image ${index + 1}`);
+    slide.setAttribute('aria-label', `Open image ${index + 1}${slide.alt ? `: ${slide.alt}` : ''}`);
   });
   firstClone.setAttribute('aria-hidden', 'true'); firstClone.setAttribute('tabindex', '-1');
   lastClone.setAttribute('aria-hidden', 'true'); lastClone.setAttribute('tabindex', '-1');
   filmstrip.appendChild(firstClone); filmstrip.insertBefore(lastClone, originalSlides[0]);
 
   let index = 1, step = 0, offset = 0, x = null, frame = null, lastTime = 0;
-  let playing = true;
+  let playing = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const toggle = carousel.querySelector('.carousel-motion-toggle');
   const measure = () => {
     const styles = getComputedStyle(filmstrip);
@@ -10735,7 +10745,12 @@ function initFilmstripCarousel(carousel) {
     frame = requestAnimationFrame(tick);
   };
   const stopAuto = () => { if (frame) cancelAnimationFrame(frame); frame = null; };
-  measure(); position(false); startAuto();
+  measure(); position(false); if (playing) startAuto();
+  if (!playing && toggle) {
+    toggle.classList.add('is-paused');
+    toggle.setAttribute('aria-pressed', 'true');
+    toggle.setAttribute('aria-label', 'Play filmstrip');
+  }
   carousel.querySelector('.carousel-arrow--prev')?.addEventListener('click', () => move(-1));
   carousel.querySelector('.carousel-arrow--next')?.addEventListener('click', () => move(1));
   toggle?.addEventListener('click', () => {
