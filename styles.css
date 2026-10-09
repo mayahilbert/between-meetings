@@ -2211,7 +2211,7 @@ h3.email-heading {
 
 /* YT playlist */
   .widget { display: flex; gap: 2em; max-width: 100vw; margin: 0 auto; }
-  .main-playlist { flex: 2; min-width: 0; }
+  .main-playlist { flex: 0 1 60%; min-width: 0; }
   .player-box { position: relative; aspect-ratio: 16 / 9; background: #2a42cc;}
   .player-box iframe { position: absolute; inset: 0; width: 100%; height: 100%; }
   .list { flex: 1; max-height: 520px; overflow-y: auto; border: 1px solid #4a4a4a;
