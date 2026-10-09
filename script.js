@@ -10884,6 +10884,38 @@ Promise.race([
   let player, current = 0;
   const listEl = document.getElementById("list");
   const titleEl = document.getElementById("now-playing");
+  const youtubePlayerBox = document.querySelector('.youtube-player');
+  const youtubePoster = youtubePlayerBox?.querySelector('.youtube-poster');
+  const youtubePosterImage = youtubePoster?.querySelector('img');
+  const youtubePosterId = youtubePlayerBox?.dataset.youtubeId || VIDEOS[0].id;
+  let youtubePlayRequested = false;
+
+  if (youtubePosterImage && youtubePosterId) {
+    const customPoster = youtubePlayerBox.dataset.poster;
+    if (customPoster) {
+      youtubePosterImage.src = customPoster;
+    } else {
+      const highResolutionPoster = `https://i.ytimg.com/vi/${youtubePosterId}/maxresdefault.jpg`;
+      const fallbackPoster = `https://i.ytimg.com/vi/${youtubePosterId}/hqdefault.jpg`;
+      youtubePosterImage.src = highResolutionPoster;
+      youtubePosterImage.addEventListener('error', () => {
+        if (youtubePosterImage.src !== fallbackPoster) youtubePosterImage.src = fallbackPoster;
+      }, { once: true });
+    }
+  }
+
+  function revealYouTubePlayer() {
+    youtubePoster?.setAttribute('hidden', '');
+    youtubePoster?.setAttribute('aria-hidden', 'true');
+    const iframe = player?.getIframe?.();
+    if (iframe) iframe.tabIndex = 0;
+  }
+
+  youtubePoster?.addEventListener('click', () => {
+    youtubePlayRequested = true;
+    revealYouTubePlayer();
+    player?.playVideo?.();
+  });
 
   function renderList() {
     listEl.innerHTML = "";
@@ -10909,12 +10941,17 @@ Promise.race([
         v.title = "Video " + (i + 1);
       }
       listEl.children[i].querySelector("span").textContent = v.title;
-      if (i === current) titleEl.textContent = v.title;
+      if (i === current) {
+        titleEl.textContent = v.title;
+        youtubePoster?.setAttribute('aria-label', `Play ${v.title}`);
+      }
     }));
   }
 
   function play(i) {
     current = i;
+    youtubePlayRequested = true;
+    revealYouTubePlayer();
     player.loadVideoById(VIDEOS[i].id);
     titleEl.textContent = VIDEOS[i].title || "";
     [...listEl.children].forEach((el, n) => el.classList.toggle("active", n === i));
@@ -10928,7 +10965,13 @@ Promise.race([
       videoId: VIDEOS[0].id,
       playerVars: { rel: 0 },
       events: {
-        onReady: () => { listEl.children[0].classList.add("active"); loadTitles(); },
+        onReady: () => {
+          const iframe = player.getIframe();
+          iframe.tabIndex = youtubePlayRequested ? 0 : -1;
+          listEl.children[0].classList.add("active");
+          loadTitles();
+          if (youtubePlayRequested) player.playVideo();
+        },
         onStateChange: (e) => {
           if (e.data === YT.PlayerState.ENDED && current < VIDEOS.length - 1) play(current + 1);
         },
