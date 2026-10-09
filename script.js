@@ -10714,12 +10714,14 @@ function initFilmstripCarousel(carousel) {
   lastClone.setAttribute('aria-hidden', 'true'); lastClone.setAttribute('tabindex', '-1');
   filmstrip.appendChild(firstClone); filmstrip.insertBefore(lastClone, originalSlides[0]);
 
-  let index = 1, step = 0, offset = 0, x = null, frame = null, lastTime = 0;
+  let index = 1, step = 0, loopDistance = 0, offset = 0, x = null, frame = null, lastTime = 0;
   let playing = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const toggle = carousel.querySelector('.carousel-motion-toggle');
   const measure = () => {
     const styles = getComputedStyle(filmstrip);
-    step = filmstrip.children[0].getBoundingClientRect().width + parseFloat(styles.gap || 0);
+    const gap = parseFloat(styles.gap || 0);
+    step = filmstrip.children[0].getBoundingClientRect().width + gap;
+    loopDistance = originalSlides.reduce((total, slide) => total + slide.getBoundingClientRect().width, 0) + gap * originalSlides.length;
     offset = parseFloat(getComputedStyle(carousel).getPropertyValue('--carousel-offset')) || 0;
   };
   const position = (animate = true, dragOffset = 0) => {
@@ -10736,14 +10738,18 @@ function initFilmstripCarousel(carousel) {
       const elapsed = Math.min(50, now - lastTime); lastTime = now;
       {
         x = (x ?? (offset - index * step)) - 32 * elapsed / 1000;
-        const loopEnd = offset - (originalSlides.length + 1) * step;
-        if (x <= loopEnd) x += originalSlides.length * step;
+        const loopEnd = offset - step - loopDistance;
+        if (loopDistance > 0 && x <= loopEnd) x += loopDistance;
         filmstrip.style.transition = 'none'; filmstrip.style.transform = `translate3d(${x}px,0,0)`;
       }
       frame = requestAnimationFrame(tick);
     };
     frame = requestAnimationFrame(tick);
   };
+  originalSlides.forEach(slide => slide.addEventListener('load', () => {
+    measure();
+    position(false);
+  }));
   const stopAuto = () => { if (frame) cancelAnimationFrame(frame); frame = null; };
   measure(); position(false); if (playing) startAuto();
   if (!playing && toggle) {
