@@ -261,6 +261,10 @@ button {
   display: block;
 }
 
+.curatorial-statement p, .curatorial-statement a {
+  font-size: 1.14rem;
+}
+
 .indent-one {
   margin-inline-start: 2em;
 }
@@ -277,7 +281,7 @@ button {
   margin-bottom: 2rem;
 }
 
-.sup {
+.sup, .curatorial-statement .sup {
   font-size: .7rem;
   vertical-align: super;
 }
