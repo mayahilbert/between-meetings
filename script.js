@@ -10697,6 +10697,7 @@ const carouselInstances = [];
 function initFilmstripCarousel(carousel) {
   const filmstrip = carousel.querySelector('.filmstrip');
   if (!filmstrip) return;
+  const filmstripViewport = carousel.querySelector('.filmstrip-viewport') || filmstrip;
   const originalSlides = [...filmstrip.children];
   const firstClone = originalSlides[0].cloneNode(true);
   const lastClone = originalSlides[originalSlides.length - 1].cloneNode(true);
@@ -10753,14 +10754,15 @@ function initFilmstripCarousel(carousel) {
   const stopAuto = () => { if (frame) cancelAnimationFrame(frame); frame = null; };
   let dragState = null;
   let suppressClick = false;
-  filmstrip.addEventListener('pointerdown', event => {
+  filmstripViewport.addEventListener('pointerdown', event => {
     if (event.pointerType === 'mouse' && event.button !== 0) return;
     stopAuto();
-    filmstrip.setPointerCapture?.(event.pointerId);
+    filmstripViewport.setPointerCapture?.(event.pointerId);
     dragState = { pointerId: event.pointerId, startX: event.clientX, startTranslate: x ?? (offset - index * step), moved: false };
     filmstrip.classList.add('is-dragging');
+    filmstripViewport.classList.add('is-dragging');
   });
-  filmstrip.addEventListener('pointermove', event => {
+  filmstripViewport.addEventListener('pointermove', event => {
     if (!dragState || event.pointerId !== dragState.pointerId) return;
     const delta = event.clientX - dragState.startX;
     if (Math.abs(delta) > 6) dragState.moved = true;
@@ -10775,11 +10777,12 @@ function initFilmstripCarousel(carousel) {
     suppressClick = dragState.moved;
     dragState = null;
     filmstrip.classList.remove('is-dragging');
-    if (event?.pointerId != null) filmstrip.releasePointerCapture?.(event.pointerId);
+    filmstripViewport.classList.remove('is-dragging');
+    if (event?.pointerId != null) filmstripViewport.releasePointerCapture?.(event.pointerId);
     if (playing) startAuto();
   };
-  filmstrip.addEventListener('pointerup', finishDrag);
-  filmstrip.addEventListener('pointercancel', finishDrag);
+  filmstripViewport.addEventListener('pointerup', finishDrag);
+  filmstripViewport.addEventListener('pointercancel', finishDrag);
   measure(); position(false); if (playing) startAuto();
   if (!playing && toggle) {
     toggle.classList.add('is-paused');

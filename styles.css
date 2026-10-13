@@ -1163,6 +1163,10 @@ hr {
   touch-action: pan-y;
 }
 
+.filmstrip-viewport.is-dragging {
+  touch-action: none;
+}
+
 .filmstrip {
   display: flex;
   gap: 80px;
