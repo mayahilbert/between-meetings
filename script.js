@@ -10751,6 +10751,35 @@ function initFilmstripCarousel(carousel) {
     position(false);
   }));
   const stopAuto = () => { if (frame) cancelAnimationFrame(frame); frame = null; };
+  let dragState = null;
+  let suppressClick = false;
+  filmstrip.addEventListener('pointerdown', event => {
+    if (event.pointerType === 'mouse' && event.button !== 0) return;
+    stopAuto();
+    filmstrip.setPointerCapture?.(event.pointerId);
+    dragState = { pointerId: event.pointerId, startX: event.clientX, startTranslate: x ?? (offset - index * step), moved: false };
+    filmstrip.classList.add('is-dragging');
+  });
+  filmstrip.addEventListener('pointermove', event => {
+    if (!dragState || event.pointerId !== dragState.pointerId) return;
+    const delta = event.clientX - dragState.startX;
+    if (Math.abs(delta) > 6) dragState.moved = true;
+    if (!dragState.moved) return;
+    event.preventDefault();
+    x = dragState.startTranslate + delta;
+    filmstrip.style.transition = 'none';
+    filmstrip.style.transform = `translate3d(${x}px,0,0)`;
+  });
+  const finishDrag = event => {
+    if (!dragState || (event && event.pointerId !== dragState.pointerId)) return;
+    suppressClick = dragState.moved;
+    dragState = null;
+    filmstrip.classList.remove('is-dragging');
+    if (event?.pointerId != null) filmstrip.releasePointerCapture?.(event.pointerId);
+    if (playing) startAuto();
+  };
+  filmstrip.addEventListener('pointerup', finishDrag);
+  filmstrip.addEventListener('pointercancel', finishDrag);
   measure(); position(false); if (playing) startAuto();
   if (!playing && toggle) {
     toggle.classList.add('is-paused');
@@ -10771,6 +10800,7 @@ function initFilmstripCarousel(carousel) {
     else if (index === originalSlides.length + 1) { index = 1; position(false); }
   });
   filmstrip.addEventListener('click', event => {
+    if (suppressClick) { suppressClick = false; return; }
     const slide = event.target.closest('.filmstrip-image');
     if (!slide || !filmstrip.contains(slide)) return;
     openFilmstripModal(slide, originalSlides);
