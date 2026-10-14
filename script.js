@@ -10387,7 +10387,9 @@ function fitArtifactPopupHeight(popup) {
 }
 
 function placePopupInSection(popup, opener, localLeft, localTop) {
-  const section = opener?.closest('section') || workspace?.closest('section');
+  const section = opener?.closest('section')
+    || (popup.dataset.originSection ? document.getElementById(popup.dataset.originSection) : null)
+    || workspace?.closest('section');
   const sectionRect = section?.getBoundingClientRect();
   const isMainDocumentPopup = popup.dataset.filmstripPopup !== 'true';
   const rightEdge = window.scrollX + document.documentElement.clientWidth;
@@ -10414,6 +10416,16 @@ function placePopupInSection(popup, opener, localLeft, localTop) {
   popup.style.right = 'auto';
   popup.style.bottom = 'auto';
   popup.dataset.originSection = section?.id || '';
+  popup.dataset.originLocalTop = String(localTop);
+}
+
+function repositionArtifactPopups() {
+  document.querySelectorAll('.artifact-popup').forEach(popup => {
+    if (popup.dataset.dragged === 'true') return;
+    const localTop = Number.parseFloat(popup.dataset.originLocalTop);
+    if (!Number.isFinite(localTop)) return;
+    placePopupInSection(popup, null, 0, localTop);
+  });
 }
 
 function centerPopupVertically(popup, target) {
@@ -10492,6 +10504,7 @@ updateFilmstripAlert();
 
 window.addEventListener('resize', () => {
   syncTrailHeights();
+  repositionArtifactPopups();
 });
 
 function makeDraggable(element, leavesTrail) {
@@ -10512,6 +10525,7 @@ function makeDraggable(element, leavesTrail) {
     }
 
     event.preventDefault();
+    if (element.classList.contains('artifact-popup')) element.dataset.dragged = 'true';
     if (!isBrowserWindow) promoteToGlobal(element);
 
     // The browser window starts centered with a CSS transform. Convert that
@@ -10898,12 +10912,12 @@ Promise.race([
 { id: "V4MHgwXBUZ0" },
 { id: "mn2ldI_TTes" },
 { id: "0Y6I-qrXsZA" },
-{ id: "_Ns0iJYRriE" },
+//{ id: "_Ns0iJYRriE" },
 { id: "b6dNVtRtzj4" },
 { id: "Mgc9llcrhuA" },
 { id: "-h4apAcZqOY" },
 { id: "6-OogMesPq4" },
-{ id: "AIzx2u-NW-0" },
+//{ id: "AIzx2u-NW-0" },
 { id: "Zqk07KAEb6A" },
 { id: "0y8la9Y-yus" },
 { id: "4sKg2zeFEdg" },
@@ -10911,6 +10925,8 @@ Promise.race([
 { id: "AyJArTQHowU" },
 { id: "LbWTLD0_JJQ" },
 { id: "ClV9n-MPopY" },
+{ id: "YpgXTxmkEFw" },
+{ id: "qRnYjQAsJo4" },
   ];
   // ============================
 
