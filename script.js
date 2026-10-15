@@ -10846,10 +10846,39 @@ window.addEventListener('resize', () => {
   carouselInstances.forEach(instance => { instance.measure(); instance.position(false); });
 });
 
+const exhibitionInfoDialog = document.querySelector('#exhibition-info');
+const exhibitionInfoClose = exhibitionInfoDialog?.querySelector('.exhibition-info-dialog__close');
+let exhibitionInfoPreviousFocus = null;
+
+function closeExhibitionInfo() {
+  if (!exhibitionInfoDialog?.open) return;
+  exhibitionInfoDialog.close();
+}
+
+exhibitionInfoClose?.addEventListener('click', closeExhibitionInfo);
+exhibitionInfoDialog?.addEventListener('click', event => {
+  if (event.target === exhibitionInfoDialog) closeExhibitionInfo();
+});
+exhibitionInfoDialog?.addEventListener('cancel', event => {
+  event.preventDefault();
+  closeExhibitionInfo();
+});
+exhibitionInfoDialog?.addEventListener('close', () => {
+  exhibitionInfoPreviousFocus?.focus?.({ preventScroll: true });
+  exhibitionInfoPreviousFocus = null;
+});
+
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   anchor.addEventListener('click', event => {
     const href = anchor.getAttribute('href');
     if (!href || href === '#') return;
+    if (anchor.classList.contains('exhibition-info-link')) {
+      event.preventDefault();
+      exhibitionInfoPreviousFocus = document.activeElement;
+      exhibitionInfoDialog?.showModal();
+      exhibitionInfoClose?.focus({ preventScroll: true });
+      return;
+    }
     const target = document.querySelector(href);
     if (!target) return;
     event.preventDefault();
@@ -10912,12 +10941,10 @@ Promise.race([
 { id: "V4MHgwXBUZ0" },
 { id: "mn2ldI_TTes" },
 { id: "0Y6I-qrXsZA" },
-//{ id: "_Ns0iJYRriE" },
 { id: "b6dNVtRtzj4" },
 { id: "Mgc9llcrhuA" },
 { id: "-h4apAcZqOY" },
 { id: "6-OogMesPq4" },
-//{ id: "AIzx2u-NW-0" },
 { id: "Zqk07KAEb6A" },
 { id: "0y8la9Y-yus" },
 { id: "4sKg2zeFEdg" },

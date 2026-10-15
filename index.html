@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Sarah Rothberg: Between Meetings virtual exhibition">
   <title>Sarah Rothberg: BETWEEN MEETINGS</title>
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
   <style>
     html,
     body {
@@ -31,6 +31,7 @@
     <a href="https://newmediartspace.info">New Media Artspace</a>
     <a href="curatorial-statement.html">Curatorial Statement</a>
     <a href="credits.html">Project Credits</a>
+    <a class="exhibition-info-link" href="#exhibition-info">Visiting Information</a>
   </header>
 
   <main id="main-content" tabindex="-1">
@@ -475,7 +476,25 @@
     </section>
   </main>
   <div class="global-drag-layer" id="global-drag-layer"></div>
-  <script src="script.js"></script>
+  <dialog class="exhibition-info-dialog" id="exhibition-info" aria-labelledby="exhibition-info-title">
+    <div class="exhibition-info-dialog__inner">
+      <button class="exhibition-info-dialog__close" type="button" aria-label="Close visiting information">×</button>
+      <h2 id="exhibition-info-title">Visiting Information</h2>
+      <p>The exhibition <em>Sarah Rothberg: BETWEEN MEETINGS</em> will be on view from October 13 through December 4, 2026 virtually and at the New Media Artspace gallery. </p>
+      <p>The gallery is open to the public by appointment. Please contact <a href="mailto:newmediaartspace@gmail.com">newmediaartspace@gmail.com</a> to arrange a visit.</p>
+      <h3>Gallery Location</h3>
+      <p>151 E. 25th Street<br>
+      New York, NY 10010<br>
+      Located in the Newman Library</p>
+
+      <h3>Public Artist Lecture</h3>
+      <p>
+            The New Media Artspace will host Sarah Rothberg for a public artist lecture on Wednesday, November 11, from
+            6:00–8:00 p.m. in the Newman Vertical Campus room 5-160. The event is free and open to the public with registration. <a href="https://tinyurl.com/rothberg-2026" target="_blank">Register here to attend.</a>
+      </p>    
+    </div>
+  </dialog>
+  <script src="script.js?v=202610142"></script>
 </body>
 
 </html>

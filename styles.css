@@ -262,6 +262,81 @@ button {
   text-align: right;
 }
 
+.exhibition-info-link {
+  position: absolute;
+  left: 1.3rem;
+  right: auto;
+  top: calc(100vh - 2.8rem);
+  bottom: auto;
+  text-align: left;
+}
+
+.site-header .exhibition-info-link {
+  text-align: left;
+}
+
+.exhibition-info-dialog {
+  width: min(680px, calc(100vw - 2rem));
+  max-width: none;
+  max-height: min(95vh, 720px);
+  padding: 0;
+  border: 1px solid #222;
+  background-image:
+    var(--noise-texture), linear-gradient(to bottom, #206796, #717a4f);
+  background-size:
+    220px 220px,
+    100% 100%;
+  background-repeat: repeat, no-repeat;
+  background-blend-mode: normal, normal;
+  color: #fff;
+  overflow: hidden;
+}
+
+.exhibition-info-dialog h2, .exhibition-info-dialog h3 {
+  color: #fff;
+}
+
+.exhibition-info-dialog h2 {
+  margin-top: 0;
+}
+
+.exhibition-info-dialog h3 {
+  margin-top: 1.5em;
+}
+
+.exhibition-info-dialog::backdrop {
+  background: rgba(0, 0, 0, .78);
+}
+
+.exhibition-info-dialog__inner {
+  position: relative;
+  max-height: min(95vh, 720px);
+  padding: 3.5rem clamp(1.25rem, 4vw, 3rem) 2rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: #154464 transparent;
+}
+
+.exhibition-info-dialog__inner::-webkit-scrollbar { width: 8px; }
+.exhibition-info-dialog__inner::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #3197da;
+}
+
+.exhibition-info-dialog__close {
+  position: absolute;
+  top: .7rem;
+  right: .9rem;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  background: transparent;
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
 .curatorial-statement-body {
   min-height: 100%;
   position: initial;
@@ -1951,6 +2026,17 @@ h3.email-heading {
     position: absolute;
     right: 1.3rem;
     top: 82vh;
+  }
+
+  .site-header .exhibition-info-link {
+    position: static;
+    order: 3;
+    left: auto;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    margin: 0;
+    text-align: left;
   }
 
   .video-container .caption {
